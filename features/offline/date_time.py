@@ -1,5 +1,7 @@
 import os
 import datetime
+from typing import Optional
+
 from logs.logging_setup import setup_logger
 
 ################################################################
@@ -9,16 +11,16 @@ logger = setup_logger(file_name)
 
 ################################################################
 
-def date() -> str | bool:
+def date() -> Optional[str]:
     try:
         return datetime.datetime.now().strftime("%b %d %Y")
     except Exception as e:
         logger.error(e)
-        return False
+        return None
 
-def time() -> str | bool:
+def time() -> Optional[str]:
     try:
         return datetime.datetime.now().strftime("%H:%M:%S")
     except Exception as e:
         logger.error(e)
-        return False
+        return None

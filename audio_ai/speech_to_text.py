@@ -10,7 +10,7 @@ from speech_recognition import Recognizer, Microphone, UnknownValueError
 ################################################################
 
 class SpeechToText():
-    def __init__(self, tts_queue: Queue) -> None:
+    def __init__(self, speech_queue: Queue) -> None:
         file_name = os.path.splitext(os.path.basename(__file__))[0]
         self.logger = setup_logger(file_name)
 
@@ -18,7 +18,7 @@ class SpeechToText():
         device = "cuda" if torch.cuda.is_available() else "cpu"
         self.logger.info(f"Loading Whisper model on: {device.upper()}")
         self.model = whisper.load_model("base", device=device)
-        self.tts = tts_queue
+        self.tts = speech_queue
 
     def process_audio(self) -> str:
         try:
@@ -80,7 +80,7 @@ class SpeechToText():
 ################################################################
 
 if __name__ == "__main__":
-    tts_queue = Queue()
-    stt = SpeechToText(tts_queue)
+    speech_queue = Queue()
+    stt = SpeechToText(speech_queue)
     while True:
         print(stt.process_audio())

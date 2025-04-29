@@ -1,16 +1,24 @@
-import subprocess
-import time
 import os
+import time
 import json
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+import subprocess
+from typing import Optional
 
-##################################################
+import spotipy
+
+from logs.logging_setup import setup_logger
+
+################################################################
+
+file_name = os.path.splitext(os.path.basename(__file__))[0]
+logger = setup_logger(file_name)
+
+################################################################
 
 class Spotify:
     def __init__(self, request) -> None:
         self.load_config()
-        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.client_id,
+        self.sp = spotipy.Spotify(auth_manager=spotipy.oauth2.SpotifyOAuth(client_id=self.client_id,
                                                     client_secret=self.client_secret,
                                                     redirect_uri=self.redirect_uri,
                                                     scope=self.scope))
@@ -40,16 +48,19 @@ class Spotify:
         except Exception as e:
             raise Exception(f"Error launching Spotify: {e}")
 
-    def get_device_id(self) -> str:
-        start_time = time.time()
-        while time.time() - start_time < 5:
-            devices = self.sp.devices()
-            if devices['devices']:
-                for device in devices['devices']:
-                    if device['type'] == 'Computer':
-                        return device['id']
-            time.sleep(1)
-        raise Exception("No computer device found within 5 seconds.")
+    def get_device_id(self) -> Optional[str]:
+        try:
+            start_time = time.time()
+            while time.time() - start_time < 5:
+                devices = self.sp.devices()
+                if devices['devices']:
+                    for device in devices['devices']:
+                        if device['type'] == 'Computer':
+                            return device['id']
+                time.sleep(1)
+        except Exception as e:
+            logger.error("No computer device found within 5 seconds.")
+            return None
 
     def search_track(self, track_name:str) -> str:
         results = self.sp.search(q=track_name, type='track', limit=1)

@@ -16,10 +16,10 @@ def search_youtube(command: str) -> None:
         search_query = parse.urlencode({"search_query": command})
         search_url = f"http://www.youtube.com/results?{search_query}"
         webbrowser.open(search_url)
-
+        return
     except Exception as e:
         logger.error(f"Error: {e}")
-        return None
+        return
     
 if __name__ == "__main__":
     search_youtube("Testing Testing 123")

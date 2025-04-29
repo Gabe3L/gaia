@@ -1,9 +1,19 @@
+import os
 import requests
 import geocoder
 import webbrowser
 
 from geopy.geocoders import Nominatim
 from geopy.distance import great_circle
+
+from logs.logging_setup import setup_logger
+
+################################################################
+
+file_name = os.path.splitext(os.path.basename(__file__))[0]
+logger = setup_logger(file_name)
+
+################################################################
 
 def distance_to_place(place) -> tuple[str, dict, float]:
     webbrowser.open("http://www.google.com/maps/place/" + place + "")

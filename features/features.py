@@ -3,7 +3,6 @@ import time
 import random
 import datetime
 import pyjokes
-import pywhatkit
 from queue import Queue
 from typing import Optional
 
@@ -19,8 +18,8 @@ CALENDAR_STRS = ["what do i have", "do i have plans", "am i busy"]
 ############################################################################
 
 class ActionManager():
-    def __init__(self, tts_queue, request_queue):
-        self.tts = tts_queue
+    def __init__(self, speech_queue, request_queue):
+        self.tts = speech_queue
         self.request = request_queue
     
     def welcome_user(self):
@@ -30,7 +29,7 @@ class ActionManager():
         greet = "Good Morning" if hour < 12 else "Good Afternoon" if hour < 18 else "Good Evening"
         self.tts.put(f'{greet} Gabe! Gaia is online and ready sir.')
 
-    def execute_task(self, command, tts_queue: Queue):
+    def execute_task(self, command, speech_queue: Queue):
         if not command:
             return None
         
@@ -71,18 +70,17 @@ class ActionManager():
             self.tts.put('These were the top headlines, Have a nice day, Sir!')
 
         elif "search google for" in command:
-            google_search.google_search(command, tts_queue)
+            google_search.google_search(command, speech_queue)
 
         elif any(word in command for word in ["play music", "hit some music"]):
             self.play_music()
 
         elif "youtube" in command:
-            video = command.split('youtube ')[1]
-            self.tts.put(f"Okay sir, playing {video} on YouTube")
-            pywhatkit.playonyt(video)
+            request = command.split('youtube ')[1]
+            youtube.search_youtube(request)
 
         elif any(word in command for word in CALENDAR_STRS):
-            google_calendar.get_events(command, tts_queue)
+            google_calendar.get_events(command, speech_queue)
 
         elif any(word in command for word in ["make a note", "write this down", "remember this"]):
             note.write_note(command)

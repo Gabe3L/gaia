@@ -1,4 +1,5 @@
-aimport os
+import os
+import time
 from typing import Optional
 from queue import Queue, Empty
 from threading import Thread, Event
@@ -17,50 +18,53 @@ class Gaia():
         file_name = os.path.splitext(os.path.basename(__file__))[0]
         self.logger = setup_logger(file_name)
 
-    def handle_performing_actions(self, stop_event, tts_queue: Queue, request_queue: Queue) -> None:
-        manager = ActionManager(tts_queue, request_queue)
+    def handle_performing_actions(self, stop_event, speech_queue: Queue, command_queue: Queue) -> None:
+        manager = ActionManager(speech_queue, command_queue)
         manager.welcome_user()
 
         while not stop_event.is_set():
             try:
-                manager.execute_task(request_queue.get(), tts_queue)
-            except Exception as error_message:
+                manager.execute_task(command_queue.get(), speech_queue)
+            except Exception as e:
                 self.logger.error(
-                    f'An Error Occurred with Action Management: {str(error_message)}')
+                    f'An Error Occurred with Action Management: {str(e)}')
+                time.sleep(1)
 
-    def handle_speech_to_text(self, stop_event, tts_queue: Queue, request_queue: Queue) -> None:
-        stt = SpeechToText(tts_queue)
+    def handle_speech_to_text(self, stop_event, speech_queue: Queue, command_queue: Queue) -> None:
+        stt = SpeechToText(speech_queue)
         while not stop_event.is_set():
             try:
                 request = stt.process_audio()
                 self.logger.info(f'Computer Understood: {request}')
-                request_queue.put(request)
-            except Exception as error_message:
+                command_queue.put(request)
+            except Exception as e:
                 self.logger.error(
-                    f'An Error Occurred with Audio Processing: {str(error_message)}')
+                    f'An Error Occurred with Audio Processing: {str(e)}')
+                time.sleep(1)
 
-    def handle_camera(self, stop_event, tts_queue: Queue) -> None:
-        camera = Webcam(tts_queue)
+    def handle_camera(self, stop_event, speech_queue: Queue) -> None:
+        camera = Webcam(speech_queue)
 
         while not stop_event.is_set():
             try:
                 camera.process_video()
-            except Exception as error_message:
-                self.logger.error(
-                    f'An Error Occurred with Video Processing: {str(error_message)}')
+            except Exception as e:
+                self.logger.error(f'An Error Occurred with Video Processing: {str(e)}')
+                time.sleep(1)
 
-    def handle_text_to_speech(self, stop_event, tts_queue: Queue) -> None:
+    def handle_text_to_speech(self, stop_event, speech_queue: Queue) -> None:
         tts = TextToSpeech()
         while not stop_event.is_set():
             try:
-                request: Optional[str] = tts_queue.get(timeout=0.5)
+                request: Optional[str] = speech_queue.get(timeout=0.5)
                 if request:
                     tts.speak(request)
             except Empty:
                 pass
-            except Exception as error_message:
+            except Exception as e:
                 self.logger.error(
-                    f'An Error Occurred with Audio Processing: {str(error_message)}')
+                    f'An Error Occurred with Audio Processing: {str(e)}')
+                time.sleep(1)
 
 
 class ThreadManager():
@@ -69,13 +73,13 @@ class ThreadManager():
         self.gaia = gaia
         self.threads: list[Thread] = []
 
-    def start_all_threads(self, stop_event: Event, tts_queue: Queue, request_queue: Queue) -> None:
+    def start_all_threads(self, stop_event: Event, speech_queue: Queue, command_queue: Queue) -> None:
         try:
             self.threads = [
-                Thread(target=self.gaia.handle_performing_actions, args=(stop_event, tts_queue, request_queue)),
-                Thread(target=self.gaia.handle_speech_to_text, args=(stop_event, tts_queue, request_queue)),
-                Thread(target=self.gaia.handle_text_to_speech, args=(stop_event, tts_queue)),
-                Thread(target=self.gaia.handle_camera, args=(stop_event, tts_queue))
+                Thread(target=self.gaia.handle_performing_actions, args=(stop_event, speech_queue, command_queue)),
+                Thread(target=self.gaia.handle_speech_to_text, args=(stop_event, speech_queue, command_queue)),
+                Thread(target=self.gaia.handle_text_to_speech, args=(stop_event, speech_queue)),
+                Thread(target=self.gaia.handle_camera, args=(stop_event, speech_queue))
             ]
 
             for thread in self.threads:
@@ -93,14 +97,14 @@ class ThreadManager():
 
 def main() -> None:
     stop_event = Event()
-    tts_queue = Queue()
-    request_queue = Queue()
+    speech_queue = Queue()
+    command_queue = Queue()
 
     gaia = Gaia()
     thread_manager = ThreadManager(gaia)
 
     try:
-        thread_manager.start_all_threads(stop_event, tts_queue, request_queue)
+        thread_manager.start_all_threads(stop_event, speech_queue, command_queue)
         while not stop_event.is_set():
             stop_event.wait(timeout=1)
     except KeyboardInterrupt:

@@ -38,7 +38,7 @@ def authenticate_google():
 
     return build('calendar', 'v3', credentials=creds)
 
-def get_events(day, service, tts_queue: Queue):
+def get_events(day, service, speech_queue: Queue):
     est = pytz.timezone('America/Toronto')
 
     start_of_day = datetime.datetime.combine(day, datetime.time.min).astimezone(est)
@@ -55,13 +55,13 @@ def get_events(day, service, tts_queue: Queue):
     events = events_result.get('items', [])
 
     if not events:
-        tts_queue.put('No upcoming events found.')
+        speech_queue.put('No upcoming events found.')
     else:
-        tts_queue.put(f"You have {len(events)} events on this day.")
+        speech_queue.put(f"You have {len(events)} events on this day.")
         for event in events:
             start = event['start'].get('dateTime', event['start'].get('date'))
             start_time = datetime.datetime.fromisoformat(start).strftime("%I:%M %p")
-            tts_queue.put(f"{event['summary']} at {start_time}")
+            speech_queue.put(f"{event['summary']} at {start_time}")
 
 def get_date(text):
     today = datetime.date.today()

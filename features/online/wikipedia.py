@@ -1,4 +1,5 @@
 import os
+from typing import Optional, Any
 
 import wikipedia
 
@@ -11,9 +12,9 @@ logger = setup_logger(file_name)
 
 ################################################################
 
-def tell_me_about(topic):
+def tell_me_about(topic) -> Optional[Any]:
     try:
         return wikipedia.summary(topic, sentences=3)
     except Exception as e:
         logger.error(e)
-        return False
+        return
