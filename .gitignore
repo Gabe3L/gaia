@@ -1,0 +1,7 @@
+admin
+logs/files/*
+ideas.pdf
+gui.py
+video_ai/scripts
+
+!logs/files/.gitkeep

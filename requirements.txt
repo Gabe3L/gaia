@@ -1,0 +1,10 @@
+wikipedia
+roboflow
+ultralytics
+torch
+pywhatkit
+pyjokes
+PyQt5
+google-cloud-speech
+google-cloud
+coqui-tts
