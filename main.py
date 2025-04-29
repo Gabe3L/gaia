@@ -1,4 +1,4 @@
-import os
+aimport os
 from typing import Optional
 from queue import Queue, Empty
 from threading import Thread, Event
@@ -72,10 +72,10 @@ class ThreadManager():
     def start_all_threads(self, stop_event: Event, tts_queue: Queue, request_queue: Queue) -> None:
         try:
             self.threads = [
-                Thread(target=self.gaia.handle_performing_actions, args=(stop_event, tts_queue, request_queue), daemon=True),
-                Thread(target=self.gaia.handle_speech_to_text, args=(stop_event, tts_queue, request_queue), daemon=True),
-                Thread(target=self.gaia.handle_text_to_speech, args=(stop_event, tts_queue), daemon=True),
-                Thread(target=self.gaia.handle_camera, args=(stop_event, tts_queue), daemon=True)
+                Thread(target=self.gaia.handle_performing_actions, args=(stop_event, tts_queue, request_queue)),
+                Thread(target=self.gaia.handle_speech_to_text, args=(stop_event, tts_queue, request_queue)),
+                Thread(target=self.gaia.handle_text_to_speech, args=(stop_event, tts_queue)),
+                Thread(target=self.gaia.handle_camera, args=(stop_event, tts_queue))
             ]
 
             for thread in self.threads:
