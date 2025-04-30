@@ -27,16 +27,21 @@ Ensure the following are installed on your system:
 
 ## Installation Guide
 
-Clone and Install GAIA:
+Clone GAIA from GitHub:
 
 ```bash
 git clone https://github.com/Gabe3L/gaia.git
 cd gaia
+```
+
+Activate a virtual environment and install dependancies:
+```bash
+pip install virtualenv
+python -m venv env
 pip install -r requirements.txt
 ```
 
-## Launch GAIA
-Once installation and hardware setup are complete, run the main assistant script:
+Once installation and hardware setup are complete, run the program:
 
 ```bash
 python -m main.py
@@ -61,6 +66,7 @@ On Windows, grant access by visiting:
 | Webcam not opening               | Check if it's being used by another app or blocked in Camera Settings        |
 | Hand tracking is slow or laggy   | Improve lighting and ensure CUDA is installed                                |
 | Text-to-speech is silent         | Ensure your speaker is set as the default audio output                       |
+| Running scripts is disabled      | Run "Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process" in terminal |
 | General Issue                    | Check the log files located in logs/files                                    |
 
 # Current Features
