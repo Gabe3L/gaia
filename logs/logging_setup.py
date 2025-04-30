@@ -9,6 +9,9 @@ def setup_logger(file_name):
     
     log_file_path = os.path.join(log_dir, f"{file_name}.log")
     
+    with open(log_file_path, 'w'):
+        pass
+    
     if not os.path.exists(log_file_path):
         open(log_file_path, 'a').close()
 

@@ -35,8 +35,9 @@ class Gaia():
         while not stop_event.is_set():
             try:
                 request = stt.process_audio()
-                self.logger.info(f'Computer Understood: {request}')
-                command_queue.put(request)
+                if request:
+                    self.logger.info(f'Computer Understood: {request}')
+                    command_queue.put(request)
             except Exception as e:
                 self.logger.error(
                     f'An Error Occurred with Audio Processing: {str(e)}')

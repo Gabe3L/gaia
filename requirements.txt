@@ -47,6 +47,7 @@ networkx
 numpy
 openai
 openai-whisper
+opencv-python
 packaging
 pandas
 parso

@@ -1,3 +1,5 @@
+import torch
+
 class DisplayConfig:
     GUI_ENABLED: bool = True
     CONFIDENCE_THRESHOLD: float = 0.6
@@ -7,7 +9,7 @@ class DisplayConfig:
     UPDATE_INTERVAL: float = 0.05
 
     ROTATE_IMAGE: bool = False
-    FLIP_IMAGE_HORIZONTALLY: bool = False
+    FLIP_IMAGE_HORIZONTALLY: bool = True
     FLIP_IMAGE_VERTICALLY: bool = False
 
     CONFIDENCE_THRESHOLD: float = 0.6
@@ -32,4 +34,7 @@ class DisplayConfig:
         6: 'two_fingers_up', 
     }
     
-    WEIGHTS_LOCATION: str = "video\\train\\weights\\best.engine"
+    if torch.cuda.is_available():
+        WEIGHTS_LOCATION: str = "video\\train\\weights\\best.engine"
+    else:
+        WEIGHTS_LOCATION: str = "video\\train\\weights\\best.onnx"
