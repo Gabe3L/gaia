@@ -1,6 +1,6 @@
 import time
 from collections import deque
-from video_ai.video_config import DisplayConfig
+from config.video_config import DisplayConfig
 
 class FPSTracker:
     def __init__(self):

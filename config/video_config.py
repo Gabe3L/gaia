@@ -32,4 +32,4 @@ class DisplayConfig:
         6: 'two_fingers_up', 
     }
     
-    WEIGHTS_LOCATION: str = "video_ai\\train\\weights\\best.engine"
+    WEIGHTS_LOCATION: str = "video\\train\\weights\\best.engine"

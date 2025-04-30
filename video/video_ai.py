@@ -8,11 +8,11 @@ import cv2
 import numpy as np
 import torch
 
-from video_ai.video_config import DisplayConfig
-from video_ai.video_detector import YOLODetector
-from video_ai.video_display import VideoDisplay
-from video_ai.windows_control import Windows
-from video_ai.fps_tracker import FPSTracker
+from config.video_config import DisplayConfig
+from video.video_detector import YOLODetector
+from video.video_display import VideoDisplay
+from video.windows_control import Windows
+from video.fps_tracker import FPSTracker
 
 from logs.logging_setup import setup_logger
 

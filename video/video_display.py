@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 from typing import List, Tuple
 
-from video_ai.video_config import DisplayConfig
+from config.video_config import DisplayConfig
 
 class VideoDisplay:
     def __init__(self) -> None:

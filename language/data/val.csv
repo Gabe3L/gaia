@@ -1,0 +1,55 @@
+text,label
+Hey Gaia,0
+Hello Gaia,0
+Wake up Gaia,0
+What's the date today?,1
+Tell me today's date,1
+What day is it?,1
+What's the time?,2
+Tell me the current time,2
+Can you give me the time?,2
+What's the weather like in London?,3
+How's the weather today?,3
+Show me the weather forecast for Paris,3
+Play Blank Space by Taylor Swift on Spotify,4
+Hit some tunes,4
+Play some music,4
+Tell me a joke,5
+Make me laugh,5
+Do you know any jokes?,5
+What's in the news?,6
+Any headlines today?,6
+Give me the latest news,6
+Take a note: Buy groceries,7
+Write this down: call mom,7
+Make a note: project due Monday,7
+Where am I?,8
+What's my current location?,8
+Can you locate me?,8
+How far is Montreal?,8
+Locate Ottawa,8
+Where is Toronto?,8
+Who is Elon Musk?,9
+Tell me about Albert Einstein,9
+What is artificial intelligence?,9
+Do I have any events today?,10
+What’s on my calendar?,10
+Am I busy today?,10
+Show me my system stats,11
+How’s my CPU usage?,11
+What’s my memory status?,11
+Goodbye Gaia,12
+Go offline,12
+Bye,12
+Open github.com,13
+Open youtube.com,13
+Open reddit.com,13
+Launch Discord,14
+Open Visual Studio Code,14
+Start Spotify,14
+Look up black holes on Google,15
+Search Google for quantum computing,15
+Google quantum entanglement,15
+Play piano tutorials on YouTube,16
+Search YouTube for lo-fi beats,16
+Find how-to code Python on YouTube,16

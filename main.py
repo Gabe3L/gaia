@@ -5,13 +5,13 @@ from queue import Queue, Empty
 from threading import Thread, Event
 from logs.logging_setup import setup_logger
 
-from features.features import ActionManager
-from video_ai.video_ai import Webcam
-from audio_ai.speech_to_text import SpeechToText
-from audio_ai.text_to_speech import TextToSpeech
+from apis.speaker import Speaker
+from apis.router import CommandRouter
+from video.video_ai import Webcam
+from audio.speech_to_text import SpeechToText
+from audio.text_to_speech import TextToSpeech
 
 ################################################################
-
 
 class Gaia():
     def __init__(self):
@@ -19,12 +19,12 @@ class Gaia():
         self.logger = setup_logger(file_name)
 
     def handle_performing_actions(self, stop_event, speech_queue: Queue, command_queue: Queue) -> None:
-        manager = ActionManager(speech_queue, command_queue)
-        manager.welcome_user()
+        speaker = Speaker(speech_queue)
+        router = CommandRouter(speaker)
 
         while not stop_event.is_set():
             try:
-                manager.execute_task(command_queue.get(), speech_queue)
+                router.route(command_queue.get())
             except Exception as e:
                 self.logger.error(
                     f'An Error Occurred with Action Management: {str(e)}')

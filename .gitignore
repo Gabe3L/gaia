@@ -6,5 +6,11 @@ logs/files/*
 ideas.pdf
 gui.py
 video_ai/scripts
+language/results/*
+
+.env
+.venv
+env/
+venv/
 
 !logs/files/.gitkeep
