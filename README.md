@@ -37,7 +37,8 @@ cd gaia
 Activate a virtual environment and install dependancies:
 ```bash
 pip install virtualenv
-python -m venv env
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 

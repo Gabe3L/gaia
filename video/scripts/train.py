@@ -1,10 +1,11 @@
 import os
 import json
 import shutil
-import logging
 
 import roboflow
 from ultralytics import YOLO
+
+from logs.logging_setup import setup_logger
 
 ################################################################
 
