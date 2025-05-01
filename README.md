@@ -61,14 +61,14 @@ On Windows, grant access by visiting:
 
 # Troubleshooting
 
-| **Issue**                        | **Solution**                                                                 |
-|----------------------------------|------------------------------------------------------------------------------|
-| Microphone not detected          | Ensure it is the default input device and that the volume is appropriate     |
-| Webcam not opening               | Check if it's being used by another app or blocked in Camera Settings        |
-| Hand tracking is slow or laggy   | Improve lighting and ensure CUDA is installed                                |
-| Text-to-speech is silent         | Ensure your speaker is set as the default audio output                       |
-| Running scripts is disabled      | Run "Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process" in terminal |
-| General Issue                    | Check the log files located in logs/files                                    |
+| **Issue**                        | **Solution**                                                                     |
+|----------------------------------|----------------------------------------------------------------------------------|
+| Microphone not detected          | Ensure it is the default input device and that the volume is appropriate         |
+| Webcam not opening               | Check if it's being used by another app or blocked in Camera Settings            |
+| Hand tracking is slow or laggy   | Improve lighting and ensure CUDA is installed                                    |
+| Text-to-speech is silent         | Ensure your speaker is set as the default audio output                           |
+| Running scripts is disabled      | Run ```Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process``` in terminal |
+| General Issue                    | Check the log files located in logs/files                                        |
 
 # Current Features
 - Google Calendar

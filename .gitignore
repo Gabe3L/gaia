@@ -6,7 +6,10 @@ logs/files/*
 ideas.pdf
 gui.py
 video_ai/scripts
-language/results/*
+language/classifier/results/*
+language/ner/results/*
+language/ner/cache/*
+events.out.tfevents.*
 
 .env
 .venv

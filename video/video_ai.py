@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 import torch
 
+from config.path_config import PathConfig
 from config.video_config import DisplayConfig
 from video.video_detector import YOLODetector
 from video.video_display import VideoDisplay
@@ -26,7 +27,7 @@ class Webcam:
         self.cap: cv2.VideoCapture = self.load_webcam()
         self.windows: Windows = Windows(self.cap)
         self.device: torch.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.model: YOLODetector = YOLODetector(DisplayConfig.WEIGHTS_LOCATION, DisplayConfig.CONFIDENCE_THRESHOLD)
+        self.model: YOLODetector = YOLODetector(PathConfig.YOLO_WEIGHTS_LOCATION, DisplayConfig.CONFIDENCE_THRESHOLD)
         self.fps_tracker = FPSTracker()
 
         self.screen_res = self.windows.get_screen_res()

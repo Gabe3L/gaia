@@ -1,5 +1,3 @@
-import torch
-
 class DisplayConfig:
     GUI_ENABLED: bool = True
     CONFIDENCE_THRESHOLD: float = 0.6
@@ -33,8 +31,3 @@ class DisplayConfig:
         5: 'thumbs_up', 
         6: 'two_fingers_up', 
     }
-    
-    if torch.cuda.is_available():
-        WEIGHTS_LOCATION: str = "video\\train\\weights\\best.engine"
-    else:
-        WEIGHTS_LOCATION: str = "video\\train\\weights\\best.onnx"
