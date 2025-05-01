@@ -12,11 +12,12 @@ from config.command_config import CommandConfig
 ################################################################
 
 class TextToAction:
-    def __init__(self):
+    def __init__(self, speech_queue):
         file_name = os.path.splitext(os.path.basename(__file__))[0]
         self.logger = setup_logger(file_name)
         self.model = self.load_model()
         self.tokenizer = AutoTokenizer.from_pretrained(PathConfig.BERT_WEIGHTS_LOCATION)
+        self.tts_queue = speech_queue
 
     def load_model(self):
         model = AutoModelForSequenceClassification.from_pretrained(PathConfig.BERT_WEIGHTS_LOCATION)
