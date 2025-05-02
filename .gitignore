@@ -8,6 +8,7 @@ gui.py
 video_ai/scripts
 language/classifier/results/*
 language/ner/results/*
+language/ner/weights/*
 language/ner/cache/*
 events.out.tfevents.*
 

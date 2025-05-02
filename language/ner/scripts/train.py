@@ -8,7 +8,8 @@ from simpletransformers.ner import NERModel, NERArgs
 class GenerateModel:
     def __init__(self):
         self.clean_workspace()
-        self.train_dataset = pd.read_csv("language/ner/data/music.csv")
+        self.train_dataset = pd.read_csv("language/ner/data/train.csv")
+        self.val_dataset = pd.read_csv("language/ner/data/val.csv")
         self.model = self.load_model()
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -22,6 +23,9 @@ class GenerateModel:
         model_args = NERArgs()
         model_args.overwrite_output_dir = True
         model_args.reprocess_input_data = True
+        model_args.evaluate_during_training = True
+        model_args.evaluate_during_training_steps = 200
+        model_args.save_best_model = True
         model_args.num_train_epochs = 5
         model_args.train_batch_size = 16
         model_args.eval_batch_size = 16
@@ -29,7 +33,7 @@ class GenerateModel:
         model_args.max_seq_length = 128
         model_args.learning_rate = 3e-5
         model_args.output_dir = "language/ner/results/"
-        model_args.best_model_dir = "language/ner/results/best_model/"
+        model_args.best_model_dir = "language/ner/weights/"
         model_args.cache_dir = "language/ner/cache"
         model_args.labels_list = [
             'O', 
@@ -49,8 +53,11 @@ class GenerateModel:
         )
 
     def train(self):
-        self.model.train_model(train_data=self.train_dataset)
-        result, model_outputs, predictions = self.model.eval_model(self.train_dataset)
+        self.model.train_model(
+            train_data=self.train_dataset,
+            eval_data=self.val_dataset
+        )
+        result, model_outputs, predictions = self.model.eval_model(self.val_dataset)
         print(result)
 
 if __name__ == "__main__":

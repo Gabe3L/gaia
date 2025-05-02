@@ -3,7 +3,7 @@ from pathlib import Path
 from transformers import BertTokenizerFast, BertForTokenClassification
 from tabulate import tabulate
 
-model_path = Path("language/ner/results/checkpoint-95-epoch-5").resolve()
+model_path = Path("language/ner/weights").resolve()
 
 model = BertForTokenClassification.from_pretrained(model_path, local_files_only=True)
 tokenizer = BertTokenizerFast.from_pretrained(model_path, local_files_only=True)
