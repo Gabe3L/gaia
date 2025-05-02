@@ -1,7 +1,7 @@
 task: detect
 mode: train
 model: video_ai/yolo11n.pt
-data: C:\Users\Gabe3\Documents\Visual Studio Workspace\gaia\video_ai\datasets\data.yaml
+data: video/datasets/data.yaml
 epochs: 100
 time: null
 patience: 100
