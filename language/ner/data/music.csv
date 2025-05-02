@@ -121,7 +121,7 @@ sentence_id,words,labels
 14,stream,O
 14,Billie,B-ARTIST
 14,Eilish,I-ARTIST
-14's,O
+14,'s,O
 14,Happier,B-ALBUM
 14,Than,I-ALBUM
 14,Ever,I-ALBUM
@@ -190,7 +190,7 @@ sentence_id,words,labels
 22,1700s,O
 23,Start,O
 23,Adele,B-ARTIST
-23's,O
+23,'s,O
 23,album,O
 23,25,B-ALBUM
 23,using,O
@@ -201,7 +201,7 @@ sentence_id,words,labels
 24,hear,O
 24,Billie,B-ARTIST
 24,Eilish,I-ARTIST
-24's,O
+24,'s,O
 24,Happier,B-ALBUM
 24,Than,I-ALBUM
 24,Ever,I-ALBUM
@@ -269,7 +269,7 @@ sentence_id,words,labels
 33,Please,O
 33,play,O
 33,Adele,B-ARTIST
-33's,O
+33,'s,O
 33,album,O
 33,25,B-ALBUM
 33,on,O
@@ -301,7 +301,7 @@ sentence_id,words,labels
 37,and,O
 37,play,O
 37,Eminem,B-ARTIST
-37's,O
+37,'s,O
 37,Lose,B-SONG
 37,Yourself,I-SONG
 38,Can,O

@@ -15,16 +15,19 @@ class GenerateModel:
     def clean_workspace(self):
         if os.path.exists("language/ner/results"):
             shutil.rmtree("language/ner/results")
+        if os.path.exists("language/ner/cache"):
+            shutil.rmtree("language/ner/cache")
 
     def load_model(self) -> NERModel:
         model_args = NERArgs()
         model_args.overwrite_output_dir = True
         model_args.reprocess_input_data = True
-        model_args.num_train_epochs = 3
+        model_args.num_train_epochs = 5
         model_args.train_batch_size = 16
         model_args.eval_batch_size = 16
         model_args.save_steps = 200
         model_args.max_seq_length = 128
+        model_args.learning_rate = 3e-5
         model_args.output_dir = "language/ner/results/"
         model_args.best_model_dir = "language/ner/results/best_model/"
         model_args.cache_dir = "language/ner/cache"
@@ -46,9 +49,9 @@ class GenerateModel:
         )
 
     def train(self):
-        self.model.train_model(self.train_dataset)
-        self.model.convert_to_onnx("language/ner/results/")
-        self.model.save_model("language/ner/results/")
+        self.model.train_model(train_data=self.train_dataset)
+        result, model_outputs, predictions = self.model.eval_model(self.train_dataset)
+        print(result)
 
 if __name__ == "__main__":
     model = GenerateModel()

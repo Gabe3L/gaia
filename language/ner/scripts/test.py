@@ -1,8 +1,12 @@
 import torch
+from pathlib import Path
 from transformers import BertTokenizerFast, BertForTokenClassification
+from tabulate import tabulate
 
-model = BertForTokenClassification.from_pretrained(r"C:\Users\Gabe3\Documents\Visual Studio Workspace\gaia\language\ner\results\checkpoint-3-epoch-3")
-tokenizer = BertTokenizerFast.from_pretrained(r"C:\Users\Gabe3\Documents\Visual Studio Workspace\gaia\language\ner\results\checkpoint-3-epoch-3")
+model_path = Path("language/ner/results/checkpoint-30-epoch-5").resolve()
+
+model = BertForTokenClassification.from_pretrained(model_path, local_files_only=True)
+tokenizer = BertTokenizerFast.from_pretrained(model_path, local_files_only=True)
 
 model.eval()
 
@@ -12,41 +16,31 @@ def predict_entities(text):
     with torch.no_grad():
         outputs = model(**inputs)
         logits = outputs.logits
-    
-    predicted_ids = torch.argmax(logits, dim=-1)
-    
-    tokens = tokenizer.convert_ids_to_tokens(inputs['input_ids'][0])
-    predicted_labels = [model.config.id2label[id.item()] for id in predicted_ids[0]]
-    
-    combined_results = []
-    current_word_tokens = []
-    current_word_label = None
 
-    for token, label in zip(tokens, predicted_labels):
-        if label != 'O':
-            if token == '[CLS]' or token == '[SEP]':
-                continue
-            
-            if token.startswith('##'):
-                current_word_tokens.append(token[2:])
-            else:
-                if current_word_tokens:
-                    combined_results.append((''.join(current_word_tokens), current_word_label))
-                current_word_tokens = [token]
-                current_word_label = label
+    predicted_ids = torch.argmax(logits, dim=-1)[0]
+    input_ids = inputs["input_ids"][0]
+    tokens = tokenizer.convert_ids_to_tokens(input_ids, skip_special_tokens=True)
+    labels = [model.config.id2label[idx.item()] for idx in predicted_ids[1:-1]]
+    full_text = tokenizer.convert_tokens_to_string(tokens).split()
     
-    if current_word_tokens:
-        combined_results.append((''.join(current_word_tokens), current_word_label))
-    
-    return combined_results
+    entities = []
+    i = 0
+    for word in full_text:
+        if i < len(labels):
+            label = labels[i]
+            if label != "O":
+                entities.append((word, label))
+            i += 1
+
+    return entities
 
 def interactive_test():
     print("Type your sentence and the model will predict named entities (type 'exit' to stop):")
-    
+
     while True:
-        text = input("You: ").lower()
+        text = input("You: ").strip()
         
-        if text == "exit":
+        if text.lower() == "exit":
             print("Exiting... Goodbye!")
             break
         
@@ -54,8 +48,7 @@ def interactive_test():
         
         if entities:
             print("\nPredicted entities:")
-            for token, label in entities:
-                print(f"Token: {token} -> Label: {label}")
+            print(tabulate(entities, headers=["Token", "Label"], tablefmt="fancy_grid"))
         else:
             print("No entities detected.\n")
 
