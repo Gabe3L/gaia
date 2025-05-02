@@ -7,17 +7,18 @@ from simpletransformers.ner import NERModel, NERArgs
 
 class GenerateModel:
     def __init__(self):
-        self.clean_workspace()
         self.train_dataset = pd.read_csv("language/ner/data/train.csv")
         self.val_dataset = pd.read_csv("language/ner/data/val.csv")
         self.model = self.load_model()
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    def clean_workspace(self):
-        if os.path.exists("language/ner/results"):
-            shutil.rmtree("language/ner/results")
+    def clear_cache(self):
         if os.path.exists("language/ner/cache"):
             shutil.rmtree("language/ner/cache")
+    
+    def clear_poor_results(self):
+        if os.path.exists("language/ner/results"):
+            shutil.rmtree("language/ner/results")
 
     def load_model(self) -> NERModel:
         model_args = NERArgs()
@@ -63,3 +64,5 @@ class GenerateModel:
 if __name__ == "__main__":
     model = GenerateModel()
     model.train()
+    model.clear_poor_results()
+    model.clear_cache()
