@@ -7,8 +7,8 @@ from simpletransformers.ner import NERModel, NERArgs
 
 class GenerateModel:
     def __init__(self):
-        self.train_dataset = pd.read_csv("language/ner/data/train.csv")
-        self.val_dataset = pd.read_csv("language/ner/data/val.csv")
+        self.train_dataset = pd.read_csv("language/ner/data/music/train.csv")
+        self.val_dataset = pd.read_csv("language/ner/data/music/val.csv")
         self.model = self.load_model()
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 

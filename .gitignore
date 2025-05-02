@@ -12,6 +12,7 @@ language/ner/weights/*
 language/ner/cache/*
 events.out.tfevents.*
 
+.cache
 .env
 .venv
 env/
