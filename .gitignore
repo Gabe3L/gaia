@@ -6,7 +6,10 @@ logs/files/*
 ideas.pdf
 gui.py
 video_ai/scripts
+
 language/classifier/results/*
+language/classifier/weights/*
+language/classifier/cache/*
 language/ner/results/*
 language/ner/weights/*
 language/ner/cache/*

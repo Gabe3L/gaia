@@ -4,23 +4,19 @@ from pathlib import Path
 
 import torch
 import pandas as pd
-from simpletransformers.ner import NERModel, NERArgs
-
-#############################################################
-
-TASK = "music"
+from simpletransformers.classification import ClassificationModel, ClassificationArgs
 
 #############################################################
 
 class PathConfig:
-    NER_PATH = Path("language/ner")
-    TRAIN_DATASET = Path(NER_PATH / "data" / TASK / "train.csv")
-    VAL_DATASET = Path(NER_PATH / "data" / TASK / "val.csv")
-    BEST_MODEL_DIR = Path(NER_PATH / "weights" / TASK)
-    OUTPUT_DIR = Path(NER_PATH / "results")
-    CACHE_DIR = Path(NER_PATH / "cache")
+    CLASSIFIER = Path("language/classifier")
+    TRAIN_DATASET = Path(CLASSIFIER / "data" / "train.csv")
+    VAL_DATASET = Path(CLASSIFIER / "data" / "val.csv")
+    BEST_MODEL_DIR = Path(CLASSIFIER / "weights")
+    OUTPUT_DIR = Path(CLASSIFIER / "results")
+    CACHE_DIR = Path(CLASSIFIER / "cache")
 
-class GenerateModel:
+class GenerateModel():
     def __init__(self):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.train_dataset, self.val_dataset = self.get_dataset()
@@ -40,8 +36,8 @@ class GenerateModel:
 
         return train_dataset, val_dataset
 
-    def load_model(self) -> NERModel:
-        model_args = NERArgs(
+    def load_model(self):
+        model_args = ClassificationArgs(
             # Logging
             logging_steps=0,
 
@@ -56,35 +52,26 @@ class GenerateModel:
             use_multiprocessing_for_evaluation=False,
             train_batch_size = 50,
             eval_batch_size = 50,
-
+            
             # Paths
-            overwrite_output_dir = True,
-            output_dir = str(PathConfig.OUTPUT_DIR),
-            best_model_dir = str(PathConfig.BEST_MODEL_DIR),
-            cache_dir = str(PathConfig.CACHE_DIR),
-
-            # Labels
-            labels_list = [
-                'O', 
-                'B-ARTIST', 'I-ARTIST', 
-                'B-SONG', 'I-SONG', 
-                'B-APP', 'I-APP', 
-                'B-ALBUM', 'I-ALBUM', 
-                'B-GENRE', 'I-GENRE'
-            ]
+            overwrite_output_dir=True,
+            output_dir=str(PathConfig.OUTPUT_DIR),
+            best_model_dir=str(PathConfig.BEST_MODEL_DIR),
+            cache_dir=str(PathConfig.CACHE_DIR),
         )
 
-        return NERModel(
-            "bert",
-            "bert-base-cased",
+        return ClassificationModel(
+            model_type="bert",
+            model_name="bert-base-uncased",
+            num_labels=17,
             args=model_args,
             use_cuda=torch.cuda.is_available()
         )
 
     def train(self):
         self.model.train_model(
-            train_data=self.train_dataset,
-            eval_data=self.val_dataset
+            train_df=self.train_dataset, 
+            eval_df=self.val_dataset
         )
         result, model_outputs, predictions = self.model.eval_model(self.val_dataset)
         print(result)
