@@ -1,6 +1,6 @@
 # Project GAIA
 
-GAIA (Gabe's AI Assistant) is a multimodal, AI-powered desktop assistant designed to enable intuitive hands-free human-computer interaction. It uses voice recognition to interpret spoken requests, tracks hand gestures to control the cursor, and speaks responses aloud using a text-to-speech engine.
+GAIA (Gabe's AI Assistant) is an AI-powered desktop assistant that enables intuitive hands-free human-computer interaction. It uses voice recognition to interpret spoken requests, tracks hand gestures to control the cursor, and speaks responses aloud using a text-to-speech engine.
 
 GAIA aims to be a fully hands-free assistant useful for accessibility, productivity, and interactive environments, including robotics and human-machine collaboration.
 
