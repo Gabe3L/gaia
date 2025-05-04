@@ -1,4 +1,5 @@
 import os
+import time
 import torch
 import whisper
 import numpy as np
@@ -18,7 +19,10 @@ class SpeechToText():
         self.tts = speech_queue
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.model = whisper.load_model("base").to_empty(device)
+
+        time.sleep(5) #TODO: Find a better fix for GPU Memory
+
+        self.model = whisper.load_model("base").to(device)
 
     def process_audio(self) -> str:
         try:

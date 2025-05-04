@@ -1,4 +1,5 @@
 import os
+import time
 import torch
 import logging
 logging.getLogger("torch.distributed.elastic.multiprocessing.redirects").setLevel(logging.ERROR)
@@ -17,6 +18,9 @@ class TextToSpeech:
         self.logger = setup_logger(file_name)
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
+
+        time.sleep(10) #TODO: Find a better fix for GPU Memory
+        
         self.tts = TTS(
             model_name="tts_models/en/ljspeech/tacotron2-DDC", 
             progress_bar=True).to(device)
