@@ -9,28 +9,26 @@ from apis.handlers.youtube_handler import YouTubeHandler
 from logs.logging_setup import setup_logger
 
 class CommandRouter:
-    def __init__(self, assistant):
+    def __init__(self, tts_queue):
         file_name = os.path.splitext(os.path.basename(__file__))[0]
         self.logger = setup_logger(file_name)
-
-        self.assistant = assistant
+        self.tts_queue = tts_queue
         self.intent_map = {
-            "get_weather": WeatherHandler(),
-            "tell_joke": JokeHandler(),
-            "play_music": MusicHandler(),
-            "take_note": NoteHandler(),
-            "get_date": DateTimeHandler("date"),
-            "get_time": DateTimeHandler("time"),
-            "youtube_search": YouTubeHandler(),
+            "weather": WeatherHandler(),
+            "joke": JokeHandler(),
+            "music": MusicHandler(),
+            "note": NoteHandler(),
+            "date": DateTimeHandler("date"),
+            "time": DateTimeHandler("time"),
+            "youtube": YouTubeHandler(),
         }
 
-    def route(self, user_command: str):
+    def route(self, label: str, elements: dict):
         """Takes the speech input as text from the user and converts it into a task"""
-        handler = self.intent_map.get(user_command)
-        if handler:
-            handler.handle(user_command, self.assistant)
-    
-    def speak(self, message: str):
-        if message:
-            self.logger.info(f"[Gaia]: {message}")
-            self.tts.put(message)
+        try:
+            handler = self.intent_map.get(label)
+            if handler:
+                self.logger.info(f'Routing {elements} to {handler.__class__.__name__}')
+                handler.handle(self.tts_queue, elements)
+        except Exception as e:
+            self.logger.error(f'Error with routing: {e}')

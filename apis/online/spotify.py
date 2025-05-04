@@ -28,12 +28,6 @@ class Spotify:
             )
         )
 
-    def find_and_play_song(self, song: str) -> None:
-        self.launch_spotify()
-        device_id = self.get_device_id()
-        track_uri = self.search_spotify(song)
-        self.play_track(track_uri, device_id)
-
     def load_config(self) -> None:
         with open("admin/spotify_creds.json", "r") as creds:
             credentials = json.load(creds)
@@ -42,17 +36,6 @@ class Spotify:
         self.redirect_uri = credentials["redirect_uri"]
         self.scope = credentials["scope"]
         self.spotify_path = credentials["spotify_path"]
-
-    def launch_spotify(self) -> None:
-        try:
-            if not os.path.exists(self.spotify_path):
-                raise FileNotFoundError(
-                    "Spotify executable not found at the specified path."
-                )
-
-            subprocess.Popen([self.spotify_path])
-        except Exception as e:
-            raise Exception(f"Error launching Spotify: {e}")
 
     def get_device_id(self) -> Optional[str]:
         try:
@@ -68,17 +51,17 @@ class Spotify:
             logger.error("No computer device found within 5 seconds.")
             return None
 
-    def search_spotify(self, **kwargs) -> Optional[str]:
+    def search_spotify(self, **elements) -> Optional[Dict[str, Any]]:
         query_parts = []
 
-        if "artist" in kwargs:
-            query_parts.append(f"artist:{kwargs['artist']}")
-        if "song" in kwargs:
-            query_parts.append(f"track:{kwargs['song']}")
-        if "album" in kwargs:
-            query_parts.append(f"album:{kwargs['album']}")
-        if "genre" in kwargs:
-            query_parts.append(f"genre:{kwargs['genre']}")
+        if "artist" in elements:
+            query_parts.append(f"artist:{elements['artist']}")
+        if "song" in elements:
+            query_parts.append(f"track:{elements['song']}")
+        if "album" in elements:
+            query_parts.append(f"album:{elements['album']}")
+        if "genre" in elements:
+            query_parts.append(f"genre:{elements['genre']}")
         
         query = " ".join(query_parts)
         if not query:
@@ -89,12 +72,14 @@ class Spotify:
         if not tracks:
             raise Exception("No tracks found.")
         
-        return [{
+        track = tracks[0]
+        return {
             'name': track['name'],
             'artist': track['artists'][0]['name'],
             'album': track['album']['name'],
             'url': track['external_urls']['spotify'],
-        } for track in tracks]
+            'uri': track['uri']
+        }
 
     def play_track(self, track_uri: str, device_id: str) -> None:
         self.sp.start_playback(device_id=device_id, uris=[track_uri])
@@ -104,4 +89,6 @@ class Spotify:
 
 if __name__ == "__main__":
     spotify = Spotify()
-    print(spotify.search_spotify(artist="Beethoven", song="Symphony No. 5", genre="Classical"))
+    device_id = spotify.get_device_id()
+    track_info = spotify.search_spotify(artist="AC/DC", song="Thunderstruck", genre="Rock")
+    spotify.play_track(track_info['uri'], device_id)

@@ -8,16 +8,16 @@ import cv2
 import numpy as np
 import torch
 
-from config.path_config import PathConfig
-from config.video_config import DisplayConfig
 from video.video_detector import YOLODetector
 from video.video_display import VideoDisplay
 from video.windows_control import Windows
 from video.fps_tracker import FPSTracker
 
+from constants.video_config import VideoConfig
 from logs.logging_setup import setup_logger
 
 ################################################################
+
 
 class Webcam:
     def __init__(self, tts: Queue) -> None:
@@ -26,12 +26,14 @@ class Webcam:
 
         self.cap: cv2.VideoCapture = self.load_webcam()
         self.windows: Windows = Windows(self.cap)
-        self.device: torch.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.model: YOLODetector = YOLODetector(PathConfig.YOLO_WEIGHTS_LOCATION, DisplayConfig.CONFIDENCE_THRESHOLD)
+        self.device: torch.device = torch.device(
+            'cuda' if torch.cuda.is_available() else 'cpu')
+        self.model: YOLODetector = YOLODetector()
         self.fps_tracker = FPSTracker()
 
         self.screen_res = self.windows.get_screen_res()
-        self.webcam_to_screen_ratio = self.windows.get_webcam_to_screen_ratio(self.screen_res, self.windows.get_camera_res())
+        self.webcam_to_screen_ratio = self.windows.get_webcam_to_screen_ratio(
+            self.screen_res, self.windows.get_camera_res())
         self.last_click_time: float = 0.0
         self.frame: Optional[np.ndarray] = None
 
@@ -67,11 +69,11 @@ class Webcam:
         return self.model.detect(frame)
 
     def transform_frame(self, frame: np.ndarray) -> np.ndarray:
-        if DisplayConfig.ROTATE_IMAGE:
+        if VideoConfig.ROTATE_IMAGE:
             frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
-        if DisplayConfig.FLIP_IMAGE_HORIZONTALLY:
+        if VideoConfig.FLIP_IMAGE_HORIZONTALLY:
             frame = cv2.flip(frame, 1)
-        if DisplayConfig.FLIP_IMAGE_VERTICALLY:
+        if VideoConfig.FLIP_IMAGE_VERTICALLY:
             frame = cv2.flip(frame, 0)
 
         return frame
@@ -91,14 +93,16 @@ class Webcam:
         x = (x0 + x1) // 2
         y = (y0 + y1) // 2
 
-        x = max(0, min(int(x * self.webcam_to_screen_ratio[0]), self.screen_res[0] - 1))
-        y = max(0, min(int(y * self.webcam_to_screen_ratio[1]), self.screen_res[1] - 1))
+        x = max(
+            0, min(int(x * self.webcam_to_screen_ratio[0]), self.screen_res[0] - 1))
+        y = max(
+            0, min(int(y * self.webcam_to_screen_ratio[1]), self.screen_res[1] - 1))
 
         return x, y
 
     def process_video(self) -> None:
         attempts: int = 0
-        while self.frame is None and attempts < DisplayConfig.MAX_CAMERA_LOAD_ATTEMPTS:
+        while self.frame is None and attempts < VideoConfig.MAX_CAMERA_LOAD_ATTEMPTS:
             time.sleep(0.01)
             attempts += 1
 
@@ -112,18 +116,20 @@ class Webcam:
                     break
 
                 boxes, confidences, class_ids = self.perform_inference(frame)
-                box, label = self.most_confident_box(boxes, confidences, class_ids)
+                box, label = self.most_confident_box(
+                    boxes, confidences, class_ids)
 
                 if box is not None:
                     self.perform_action(box, label)
-                
+
                 self.fps_tracker.update()
 
-                if DisplayConfig.GUI_ENABLED:
+                if VideoConfig.GUI_ENABLED:
                     if box is not None:
                         frame = VideoDisplay.annotate_frame(frame, box, label)
 
-                    VideoDisplay.insert_text_onto_frame(frame, f'FPS: {int(self.fps_tracker.displayed_fps)}', row=1)
+                    VideoDisplay.insert_text_onto_frame(
+                        frame, f'FPS: {int(self.fps_tracker.displayed_fps)}', row=1)
                     VideoDisplay.show_frame("GAIA Test", frame)
 
                     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -132,11 +138,11 @@ class Webcam:
             self.camera_thread_running = False
             self.camera_thread.join()
             self.cap.release()
-            if DisplayConfig.GUI_ENABLED:
+            if VideoConfig.GUI_ENABLED:
                 cv2.destroyAllWindows()
 
     def perform_action(self, box: List[int], class_id: int) -> None:
-        label: str = DisplayConfig.LABELS[class_id]
+        label: str = VideoConfig.LABELS[class_id]
         x, y = self.find_box_center(box)
 
         if label == 'hand_open':
@@ -152,7 +158,7 @@ class Webcam:
         elif label == 'hand_pinching':
             self.windows.clicking = True
             self.windows.move_mouse(*self.windows.get_cursor_pos(), x, y)
-            if time.time() - self.last_click_time >= DisplayConfig.CLICK_DELAY:
+            if time.time() - self.last_click_time >= VideoConfig.CLICK_DELAY:
                 self.windows.left_mouse_down()
                 self.last_click_time = time.time()
             return

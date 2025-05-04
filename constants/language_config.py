@@ -1,8 +1,8 @@
-class CommandConfig:
+class LanguageConfig:
     COMMAND_CONFIDENCE_THRESHOLD: float = 0.2
 
     GREETINGS = {"hello gaia", "hey gaia", "gaia",
-             "wake up gaia", "you there gaia", "time to work gaia"}
+                 "wake up gaia", "you there gaia", "time to work gaia"}
     GREETING_RESPONSES = [
         "Always there for you, sir.",
         "I am ready, sir.",
@@ -18,9 +18,9 @@ class CommandConfig:
     NOTE_COMMANDS = {"take a note", "write this"}
     FILLER_WORDS = {"please", "can you", "could you",
                     "would you", "hey", "gaia", "tell me", "show me"}
-    
+
     CLASS_NAMES = [
-        "greeting", "date", "time", "weather", "music", "joke", 
-        "news", "note", "location", "wiki", "calendar", "system", 
+        "greeting", "date", "time", "weather", "music", "joke",
+        "news", "note", "location", "wiki", "calendar", "system",
         "shutdown", "website", "launch", "google", "youtube"
     ]

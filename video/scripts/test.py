@@ -7,18 +7,19 @@ from ultralytics import YOLO
 
 from PIL import Image, ImageDraw
 
-from config.path_config import PathConfig
+from constants.path_config import PathConfig
 
 ###############################################################
+
 
 class YOLOTester:
     def __init__(self):
         self.device = torch.device(
             'cuda' if torch.cuda.is_available() else 'cpu')
         self.model = YOLO(
-            "video\\train\\weights\\best.engine" 
-            if torch.cuda.is_available() 
-            else "video\\train\\weights\\best.onnx", 
+            "video\\train\\weights\\best.engine"
+            if torch.cuda.is_available()
+            else "video\\train\\weights\\best.onnx",
             task='detect'
         )
         self.confidence_threshold = 0.7
@@ -27,16 +28,17 @@ class YOLOTester:
         with torch.no_grad():
             results = self.model.predict(frame)[0]
         return self.extract_detections(results)
-    
+
     @staticmethod
     def draw_box(score, box, label, colour, image):
         x0, y0, x1, y1 = map(int, box.tolist())
         draw = ImageDraw.Draw(image)
         draw.rectangle([x0, y0, x1, y1], outline=colour, width=3)
         draw.text((10, 10), f'Action: {label}', fill="black")
-        draw.text((image.width - 75, 10), f'Score: {(score * 100):.0f}%', fill="black")
+        draw.text((image.width - 75, 10),
+                  f'Score: {(score * 100):.0f}%', fill="black")
         return image
-    
+
     @staticmethod
     def annotate_frame(frame, box: Tuple[int, int, int, int], class_id: int):
         cv2.rectangle(frame, (box[0], box[1]), (box[2], box[3]), (0, 0, 0), 2)
@@ -59,12 +61,12 @@ class YOLOTester:
                 class_ids.append(int(box.cls[0]))
 
         return np.array(boxes), np.array(confidences), np.array(class_ids)
-    
+
     def process_video(self):
         cap = cv2.VideoCapture(0)
         if not cap.isOpened():
             raise RuntimeError("Webcam not found.")
-        
+
         try:
             while True:
                 ret, frame = cap.read()
@@ -91,6 +93,7 @@ class YOLOTester:
             cv2.destroyAllWindows()
 
 ##############################################################
+
 
 if __name__ == "__main__":
     test = YOLOTester()

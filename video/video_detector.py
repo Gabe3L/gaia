@@ -4,14 +4,18 @@ import torch
 import numpy as np
 from ultralytics import YOLO
 
+from constants.video_config import VideoConfig
+
 ###############################################################
 
+
 class YOLODetector:
-    def __init__(self, weights_location: str, confidence_threshold: float) -> None:
+    def __init__(self) -> None:
         self.device: torch.device = torch.device(
             'cuda' if torch.cuda.is_available() else 'cpu')
-        self.model: YOLO = YOLO(weights_location, task='detect')
-        self.confidence_threshold: float = confidence_threshold
+        self.model: YOLO = YOLO("video\\train\\weights\\best.engine" if torch.cuda.is_available(
+        ) else "video\\train\\weights\\best.onnx", task='detect')
+        self.confidence_threshold: float = VideoConfig.CONFIDENCE_THRESHOLD
 
     def detect(self, frame: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Run detection on a frame and return processed results."""

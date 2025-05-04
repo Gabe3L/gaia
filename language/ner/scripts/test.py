@@ -1,4 +1,6 @@
+import logging
 from pathlib import Path
+logging.getLogger("torch.distributed.elastic.multiprocessing.redirects").setLevel(logging.ERROR)
 
 import torch
 from transformers import BertTokenizerFast, BertForTokenClassification
@@ -22,8 +24,7 @@ class Tester:
         inputs = self.tokenizer(text, return_tensors="pt", truncation=True, padding=True)
         
         with torch.no_grad():
-            outputs = self.model(**inputs)
-            logits = outputs.logits
+            logits = self.model(**inputs).logits
 
         predicted_ids = torch.argmax(logits, dim=-1)[0]
         input_ids = inputs["input_ids"][0]

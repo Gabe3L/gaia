@@ -1,9 +1,13 @@
 import os
 import torch
+import logging
+logging.getLogger("torch.distributed.elastic.multiprocessing.redirects").setLevel(logging.ERROR)
+
 import numpy as np
-import sounddevice as sd
-from logs.logging_setup import setup_logger
 from TTS.api import TTS
+import sounddevice as sd
+
+from logs.logging_setup import setup_logger
 
 ################################################################
 

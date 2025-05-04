@@ -13,7 +13,7 @@ logger = setup_logger(file_name)
 ################################################################
 
 def get_articles() -> Optional[str]:
-    with open('config.json', 'r') as file:
+    with open('admin/news_creds.json', 'r') as file:
         config = json.load(file)
         api_key = config.get("news_api_key")
 

@@ -1,14 +1,46 @@
-from apis.online.spotify import Spotify
+import os
+import json
+from typing import Dict
 from queue import Queue
+
+from apis.online.spotify import Spotify
+from logs.logging_setup import setup_logger
+from apis.offline.open_app import OpenApp
 
 class MusicHandler:
     def __init__(self):
-        self.spotify = Spotify("play music")
+        file_name = os.path.splitext(os.path.basename(__file__))[0]
+        self.logger = setup_logger(file_name)
+        self.spotify = Spotify()
         self.apple_music = None
         self.youtube_music = None
         self.amazon_music = None
 
-    def handle(self, speech_queue: Queue, **kwargs):
-        if kwargs.get("app") == "spotify":
-            self.play_music(kwargs)
-        speech_queue.put("Playing music.")
+    def handle(self, speech_queue: Queue, elements: Dict[str, str]):
+        self.logger.info(f'Recieved: {elements}')
+
+        requested_app = elements.get("app").lower()
+        app: str = None
+        match requested_app:
+            case "spotify" | "spot":
+                app = "spotify"
+            case "amazon" | "amazon music":
+                app = "amazon"
+            case "you" | "tube" | "youtube" | "youtube music":
+                app = "youtube"
+            case "apple" | "apple music":
+                app = "apple"
+            case _:
+                with open("config/preferences.json", "r") as f:
+                    preferences = json.load(f)
+                app = preferences.get("music_app", "spotify").lower()
+        
+        if app == "spotify":
+            if not OpenApp.is_app_open(app):
+                OpenApp.open_app(app)
+            
+            device_id = self.spotify.get_device_id()
+            self.logger.info(f'Searching for {elements} on Spotify')
+            track_info = self.spotify.search_spotify(**elements)
+            self.spotify.play_track(track_info["uri"], device_id)
+            speech_queue.put("Playing music.")

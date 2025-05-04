@@ -15,15 +15,16 @@ class SpeechToText():
         self.logger = setup_logger(file_name)
 
         self.recording = Recognizer()
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.logger.info(f"Loading Whisper model on: {device.upper()}")
-        self.model = whisper.load_model("base", device=device)
         self.tts = speech_queue
+
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.model = whisper.load_model("base").to_empty(device)
 
     def process_audio(self) -> str:
         try:
             request = self.get_request()
             if request:
+                self.logger.info(f"Whisper Heard: {request}")
                 return request
         except UnknownValueError:
             self.logger.error("Audio could not be understood.")
