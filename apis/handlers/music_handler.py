@@ -18,23 +18,30 @@ class MusicHandler:
 
     def handle(self, speech_queue: Queue, elements: Dict[str, str]):
         self.logger.info(f'Recieved: {elements}')
-
-        requested_app = elements.get("app").lower()
-        app: str = None
-        match requested_app:
-            case "spotify" | "spot":
-                app = "spotify"
-            case "amazon" | "amazon music":
-                app = "amazon"
-            case "you" | "tube" | "youtube" | "youtube music":
-                app = "youtube"
-            case "apple" | "apple music":
-                app = "apple"
-            case _:
-                with open("config/preferences.json", "r") as f:
-                    preferences = json.load(f)
-                app = preferences.get("music_app", "spotify").lower()
         
+        requested_app = elements.get("app")
+        app: str = None
+        if requested_app:
+            match requested_app.lower():
+                case "spotify" | "spot":
+                    app = "spotify"
+                case "amazon" | "amazon music":
+                    app = "amazon"
+                case "you" | "tube" | "youtube" | "youtube music":
+                    app = "youtube"
+                case "apple" | "apple music":
+                    app = "apple"
+                case _:
+                    self.logger.info(f'Unrecognized app "{requested_app}", using default.')
+        else:
+            self.logger.info(f'User didn\'t provide an app, using default.')
+                   
+        if app is None: 
+            with open("config/preferences.json", "r") as f:
+                preferences = json.load(f)
+            app = preferences.get("music_app", "spotify").lower()
+        
+        self.logger.info(f"Streaming music from {app}")
         if app == "spotify":
             if not OpenApp.is_app_open(app):
                 OpenApp.open_app(app)
