@@ -1,8 +1,12 @@
-from transformers import BertTokenizerFast, BertForTokenClassification
 from pathlib import Path
-import torch
+from typing import Dict, Tuple
 
-def load_ner_models():
+import torch
+from transformers import BertTokenizerFast, BertForTokenClassification
+
+#############################################################
+
+def load_ner_models() -> Dict[str, Tuple[BertForTokenClassification, BertTokenizerFast]]:
     root = Path("language/ner/weights").resolve()
     models = {}
     for subdir in root.iterdir():
@@ -13,7 +17,7 @@ def load_ner_models():
             models[label] = (model, tokenizer)
     return models
 
-def predict_entities(label: str, text: str, ner_models: dict, logger) -> dict:
+def predict_entities(label: str, text: str, ner_models: Dict[str, Tuple[BertForTokenClassification, BertTokenizerFast]], logger) -> Dict[str, str]:
     if label not in ner_models:
         logger.warning(f"No NER model found for label '{label}'")
         return {}
@@ -59,11 +63,11 @@ def predict_entities(label: str, text: str, ner_models: dict, logger) -> dict:
 
     return entities
 
-def _add_entity(entities, label, tokenizer, tokens):
+def _add_entity(entities: Dict[str, list], label: str, tokenizer: BertTokenizerFast, tokens: list) -> None:
     phrase = tokenizer.convert_tokens_to_string(tokens).replace(" ##", "").strip()
     entities.setdefault(label, []).append(phrase)
 
-def clean_entities(raw_elements: dict) -> dict:
+def clean_entities(raw_elements: Dict[str, list]) -> Dict[str, str]:
     return {
         key.lower(): "".join(val).replace("##", "").strip().lower()
         for key, val in raw_elements.items()

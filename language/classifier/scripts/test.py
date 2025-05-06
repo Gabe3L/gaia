@@ -1,31 +1,33 @@
-from constants.language_config import LanguageConfig
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch.nn.functional as F
-import torch
 import logging
+from typing import Tuple
 from pathlib import Path
 logging.getLogger(
     "torch.distributed.elastic.multiprocessing.redirects").setLevel(logging.ERROR)
 
+import torch
+import torch.nn.functional as F
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
+from constants.language_config import LanguageConfig
 
 #############################################################
 
 
 class Tester:
-    def __init__(self):
+    def __init__(self) -> None:
         self.model_path = Path("language/classifier/weights").resolve()
         self.tokenizer = self.load_tokenizer()
         self.model = self.load_model()
 
-    def load_model(self):
+    def load_model(self) -> AutoModelForSequenceClassification:
         return AutoModelForSequenceClassification.from_pretrained(self.model_path).eval()
 
-    def load_tokenizer(self):
+    def load_tokenizer(self) -> AutoTokenizer:
         return AutoTokenizer.from_pretrained(self.model_path)
 
-    def predict_classes(self, text):
+    def predict_classes(self, text: str) -> Tuple[str, float]:
         inputs = self.tokenizer(
-            text, return_tensors="pt", truncation=True, padding=True, max_length=128)
+            text, return_tensors="pt", truncation=True, padding=True)
 
         with torch.no_grad():
             logits = self.model(**inputs).logits
@@ -40,7 +42,7 @@ class Tester:
 #############################################################
 
 
-def main():
+def main() -> None:
     tester = Tester()
 
     print("Type a sentence and the model will classify it (type 'exit' to stop):")

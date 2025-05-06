@@ -5,8 +5,8 @@ logging.getLogger(
     "torch.distributed.elastic.multiprocessing.redirects").setLevel(logging.FATAL)
 
 from apis.router import CommandRouter
-from .classifier import load_classifier_model, predict_classes
-from .ner import load_ner_models, predict_entities
+from language.classifier_manager import load_classifier_model, predict_classes
+from language.ner_manager import load_ner_models, predict_entities
 from logs.logging_setup import setup_logger
 from constants.language_config import LanguageConfig
 
