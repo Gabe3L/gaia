@@ -53,18 +53,17 @@ def main():
     while True:
         text = input("You: ").strip().lower()
         
-        while True:
-            if text == "exit":
-                print("Exiting")
-                break
-            
-            entities = tester.predict_entities(text)
-            
-            if entities:
-                print("\nPredicted entities:")
-                print(tabulate(entities, headers=["Token", "Label"], tablefmt="fancy_grid"))
-            else:
-                print("No entities detected.\n")
+        if text == "exit":
+            print("Exiting")
+            break
+        
+        entities = tester.predict_entities(text)
+        
+        if entities:
+            print("\nPredicted entities:")
+            print(tabulate(entities, headers=["Token", "Label"], tablefmt="fancy_grid"))
+        else:
+            print("No entities detected.\n")
 
 #############################################################
 

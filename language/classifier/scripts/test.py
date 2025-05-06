@@ -13,7 +13,7 @@ logging.getLogger(
 
 class Tester:
     def __init__(self):
-        self.model_path = Path("language/ner/weights/music").resolve()
+        self.model_path = Path("language/classifier/weights").resolve()
         self.tokenizer = self.load_tokenizer()
         self.model = self.load_model()
 

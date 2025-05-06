@@ -8,6 +8,7 @@ logging.getLogger("torch.distributed.elastic.multiprocessing.redirects").setLeve
 
 import torch
 import pandas as pd
+from datasets import Dataset
 from simpletransformers.classification import ClassificationModel, ClassificationArgs
 
 #############################################################
@@ -52,6 +53,7 @@ class GenerateModel():
             evaluate_during_training = True,
 
             # Resources
+            fp16=True,
             use_multiprocessing=False,
             use_multiprocessing_for_evaluation=False,
             train_batch_size = 50,
@@ -65,8 +67,8 @@ class GenerateModel():
         )
 
         return ClassificationModel(
-            model_type="bert",
-            model_name="bert-base-uncased",
+            model_type="distilbert",
+            model_name="distilbert-base-uncased",
             num_labels=17,
             args=model_args,
             use_cuda=torch.cuda.is_available()

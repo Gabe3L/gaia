@@ -56,6 +56,7 @@ class GenerateModel:
             evaluate_during_training = True,
 
             # Resources
+            fp16=True,
             use_multiprocessing=False,
             use_multiprocessing_for_evaluation=False,
             train_batch_size = 50,
@@ -79,8 +80,8 @@ class GenerateModel:
         )
 
         return NERModel(
-            "bert",
-            "bert-base-cased",
+            model_type="bert",
+            model_name="bert-base-cased",
             args=model_args,
             use_cuda=torch.cuda.is_available()
         )
