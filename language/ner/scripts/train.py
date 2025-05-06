@@ -50,6 +50,7 @@ class GenerateModel:
             logging_steps=0,
 
             # Learning
+            weight_decay=0.01,
             num_train_epochs = 5,
             learning_rate = 3e-5,
             save_best_model = True,
@@ -59,8 +60,8 @@ class GenerateModel:
             fp16=True,
             use_multiprocessing=False,
             use_multiprocessing_for_evaluation=False,
-            train_batch_size = 50,
-            eval_batch_size = 50,
+            train_batch_size = 16,
+            eval_batch_size = 16,
 
             # Paths
             overwrite_output_dir = True,
