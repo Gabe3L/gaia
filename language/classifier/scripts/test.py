@@ -13,7 +13,7 @@ from constants.language_config import LanguageConfig
 #############################################################
 
 
-class Tester:
+class ModelTester:
     def __init__(self) -> None:
         self.model_path = Path("language/classifier/weights").resolve()
         self.tokenizer = self.load_tokenizer()
@@ -43,7 +43,7 @@ class Tester:
 
 
 def main() -> None:
-    tester = Tester()
+    tester = ModelTester()
 
     print("Type a sentence and the model will classify it (type 'exit' to stop):")
 

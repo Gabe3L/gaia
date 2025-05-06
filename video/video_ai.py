@@ -64,10 +64,6 @@ class Webcam:
                 with self.frame_lock:
                     self.frame = frame
 
-    def perform_inference(self, frame: np.ndarray) -> Tuple[List[int], List[float], List[int]]:
-        frame = self.transform_frame(frame)
-        return self.model.detect(frame)
-
     def transform_frame(self, frame: np.ndarray) -> np.ndarray:
         if VideoConfig.ROTATE_IMAGE:
             frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
@@ -79,7 +75,7 @@ class Webcam:
         return frame
 
     def most_confident_box(self, boxes: List[List[int]], confidences: List[float], class_ids: List[int]) -> Tuple[List[int], int]:
-        if len(confidences) == 0:
+        if len(boxes) == 0:
             return None, None
 
         max_index = np.argmax(confidences)
@@ -102,7 +98,7 @@ class Webcam:
 
     def process_video(self) -> None:
         attempts: int = 0
-        while self.frame is None and attempts < VideoConfig.MAX_CAMERA_LOAD_ATTEMPTS:
+        while (self.frame is None) and (attempts < VideoConfig.MAX_CAMERA_LOAD_ATTEMPTS):
             time.sleep(0.01)
             attempts += 1
 
@@ -115,7 +111,9 @@ class Webcam:
                     self.logger.warning("No frame received from webcam.")
                     break
 
-                boxes, confidences, class_ids = self.perform_inference(frame)
+                frame = self.transform_frame(frame)
+
+                boxes, confidences, class_ids = self.model.detect(frame)
                 box, label = self.most_confident_box(
                     boxes, confidences, class_ids)
 
@@ -145,33 +143,34 @@ class Webcam:
         label: str = VideoConfig.LABELS[class_id]
         x, y = self.find_box_center(box)
 
-        if label == 'hand_open':
-            self.windows.unclick()
-            start_x, start_y = self.windows.get_cursor_pos()
-            self.windows.move_mouse(start_x, start_y, x, y)
-            return
+        match label:
+            case 'hand_open':
+                self.windows.unclick()
+                start_x, start_y = self.windows.get_cursor_pos()
+                self.windows.move_mouse(start_x, start_y, x, y)
+                return
 
-        elif label == 'hand_closed':
-            self.windows.unclick()
-            return
+            case 'hand_closed':
+                self.windows.unclick()
+                return
 
-        elif label == 'hand_pinching':
-            self.windows.clicking = True
-            self.windows.move_mouse(*self.windows.get_cursor_pos(), x, y)
-            if time.time() - self.last_click_time >= VideoConfig.CLICK_DELAY:
-                self.windows.left_mouse_down()
-                self.last_click_time = time.time()
-            return
+            case 'hand_pinching':
+                self.windows.clicking = True
+                self.windows.move_mouse(*self.windows.get_cursor_pos(), x, y)
+                if time.time() - self.last_click_time >= VideoConfig.CLICK_DELAY:
+                    self.windows.left_mouse_down()
+                    self.last_click_time = time.time()
+                return
 
-        elif label == 'thumbs_up':
-            self.windows.unclick()
-            self.windows.mouse_scroll('up')
-            return
+            case 'thumbs_up':
+                self.windows.unclick()
+                self.windows.mouse_scroll('up')
+                return
 
-        elif label == 'thumbs_down':
-            self.windows.unclick()
-            self.windows.mouse_scroll('down')
-            return
+            case 'thumbs_down':
+                self.windows.unclick()
+                self.windows.mouse_scroll('down')
+                return
 
 ##############################################################################################
 

@@ -24,7 +24,7 @@ class PathConfig:
     OUTPUT_DIR = Path(NER_PATH / "results")
     CACHE_DIR = Path(NER_PATH / "cache")
 
-class GenerateModel:
+class ModelTrainer:
     def __init__(self):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.train_dataset, self.val_dataset = self.get_dataset()
@@ -98,7 +98,7 @@ class GenerateModel:
 #############################################################
 
 def main():
-    model = GenerateModel()
+    model = ModelTrainer()
     model.train()
     model.clear_poor_results()
     model.clear_cache()

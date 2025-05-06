@@ -8,7 +8,7 @@ from ultralytics import YOLO
 ###############################################################
 
 
-class YOLOTester:
+class ModelTester:
     def __init__(self):
         self.device = torch.device(
             'cuda' if torch.cuda.is_available() else 'cpu')
@@ -80,5 +80,5 @@ class YOLOTester:
 
 
 if __name__ == "__main__":
-    test = YOLOTester()
-    test.process_video()
+    tester = ModelTester()
+    tester.process_video()

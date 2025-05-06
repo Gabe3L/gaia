@@ -14,67 +14,73 @@ logger = setup_logger(file_name)
 
 ################################################################
 
-def get_config():
-    logger.info("Loading Config.")
+class ModelTrainer:
+    def __init__(self):
+        roboflow.login()
+        self.config = self.get_config()
+        self.workspace = self.get_roboflow_workspace(self.config)
 
-    with open("admin/roboflow_creds.json", "r") as f:
-        config = json.load(f)
+    def get_config():
+        logger.info("Loading Config.")
 
-    return config
+        with open("admin/roboflow_creds.json", "r") as f:
+            config = json.load(f)
 
-def get_roboflow_workspace(config):
-    logger.info("Accessing Roboflow")
-    rf = roboflow.Roboflow()
-    return rf.workspace(config["workspace"]).project(config["project"]).version(config["version"])
+        return config
 
-def get_dataset(config, project):
-    logger.info("Downloading Dataset")
+    def get_roboflow_workspace(config):
+        logger.info("Accessing Roboflow")
+        rf = roboflow.Roboflow()
+        return rf.workspace(config["workspace"]).project(config["project"]).version(config["version"])
 
-    return project.download(
-        config["model_type"], 
-        location="video_ai/datasets"
-    )
+    def get_dataset(self):
+        logger.info("Downloading Dataset")
 
-def delete_dataset(dataset):
-    dataset_path = dataset.location
-    if os.path.exists(dataset_path):
-        shutil.rmtree(dataset_path)
-        logger.info(f"Dataset at '{dataset_path}' deleted.")
-    else:
-        logger.warning(f"Dataset path '{dataset_path}' not found.")
-
-def train(dataset):
-    try:
-        logger.info("Beginning Training.")
-        model = YOLO("video_ai/yolo11n.pt").to("cuda")
-        model.train(
-            data=os.path.join(dataset.location, "data.yaml"),
-            project="video_ai",
-            device="cuda",
-            batch=60,
-            imgsz=640,
-            epochs=100,
-            workers=8,
-            nms=True,
-            iou=0.6,
-            amp=True,
-            half=True
+        return self.project.download(
+            self.config["model_type"], 
+            location="video_ai/datasets"
         )
 
-        logger.info("Exporting model...")
-        model.export(format="onnx", half=True, device="cuda")
-        model.export(format="engine", half=True, device="cuda")
-    except Exception as e:
-        logger.error(e)
+    def delete_dataset(self, dataset):
+        dataset_path = dataset.location
+        if os.path.exists(dataset_path):
+            shutil.rmtree(dataset_path)
+            logger.info(f"Dataset at '{dataset_path}' deleted.")
+        else:
+            logger.warning(f"Dataset path '{dataset_path}' not found.")
+
+    def train(self, dataset):
+        try:
+            logger.info("Beginning Training.")
+            model = YOLO("video_ai/yolo11n.pt").to("cuda")
+            model.train(
+                data=os.path.join(dataset.location, "data.yaml"),
+                project="video_ai",
+                device="cuda",
+                batch=60,
+                imgsz=640,
+                epochs=100,
+                workers=8,
+                nms=True,
+                iou=0.6,
+                amp=True,
+                half=True
+            )
+
+            logger.info("Exporting model...")
+            model.export(format="onnx", half=True, device="cuda")
+            model.export(format="engine", half=True, device="cuda")
+        except Exception as e:
+            logger.error(e)        
+
+################################################################
 
 def main():
-    roboflow.login()
+    trainer = ModelTrainer()
+    dataset = trainer.get_dataset()
+    trainer.train(dataset)
+    trainer.delete_dataset(dataset)
 
-    config = get_config()
-    workspace = get_roboflow_workspace(config)
-    dataset = get_dataset(config, workspace)
-    train(dataset)
-    delete_dataset(dataset)
 
 #################################################################################################
 

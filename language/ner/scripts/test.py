@@ -8,7 +8,7 @@ from tabulate import tabulate
 
 #############################################################
 
-class Tester:
+class ModelTester:
     def __init__(self):
         self.model_path = Path("language/ner/weights/music").resolve()
         self.tokenizer = self.load_tokenizer()
@@ -46,7 +46,7 @@ class Tester:
 #############################################################
 
 def main():
-    tester = Tester()
+    tester = ModelTester()
 
     print("Type a sentence and the model will predict entities (type 'exit' to stop):")
 

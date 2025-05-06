@@ -6,9 +6,6 @@ from constants.video_config import VideoConfig
 
 
 class VideoDisplay:
-    def __init__(self) -> None:
-        pass
-
     @staticmethod
     def show_frame(window_name: str, frame: np.ndarray) -> None:
         """Displays the frame in a window."""
