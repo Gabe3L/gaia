@@ -1,8 +1,12 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
+const { spawn } = require('child_process');
+
+let mainWindow;
+let backendProcess;
 
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -10,14 +14,41 @@ function createWindow() {
     },
   });
 
-  win.loadFile(path.join(__dirname, 'public/index.html'));
+  mainWindow.loadURL('http://localhost:3000');
 }
 
-app.whenReady().then(createWindow);
+function startBackend() {
+  const scriptPath = path.resolve(__dirname, '..', 'backend', 'start.py');
+  
+  backendProcess = spawn('python', [scriptPath]);
+  
+  backendProcess.stdout.on('data', (data) => {
+    console.log(`[Backend]: ${data}`);
+  });
+
+  backendProcess.stderr.on('data', (data) => {
+    console.error(`[Backend Error]: ${data}`);
+  });
+
+  backendProcess.on('close', (code) => {
+    console.log(`Backend exited with code ${code}`);
+  });
+}
+
+app.whenReady().then(() => {
+  startBackend();
+  setTimeout(createWindow, 5000);
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+app.on('will-quit', () => {
+  if (backendProcess) {
+    backendProcess.kill();
   }
 });
 
