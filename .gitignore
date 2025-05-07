@@ -2,7 +2,9 @@ __pycache__/
 *.py[cod]
 
 shared/admin/*
+!shared/admin/.gitkeep
 shared/config/*
+!shared/config/.gitkeep
 
 backend/app/video/scripts/*
 backend/app/language/classifier/results/*
@@ -13,6 +15,8 @@ backend/app/language/ner/weights/*
 backend/app/language/ner/cache/*
 
 logs/files/*
+!logs/files/.gitkeep
+
 events.out.tfevents.*
 
 .cache
@@ -20,5 +24,3 @@ events.out.tfevents.*
 .venv
 env/
 venv/
-
-!logs/files/.gitkeep
