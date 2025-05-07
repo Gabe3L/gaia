@@ -1,0 +1,16 @@
+{
+    "name": "gaia",
+    "version": "1.0.0",
+    "description": "GAIA (Gabe's AI Assistant) is an AI-powered desktop assistant that enables intuitive hands-free human-computer interaction",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "devDependencies": {
+        "electron": "^36.1.0"
+    },
+    "dependencies": {
+        "electron-app": "file:",
+        "gaia": "file:"
+    }
+}

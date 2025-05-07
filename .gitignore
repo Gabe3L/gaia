@@ -6,13 +6,20 @@ shared/admin/*
 shared/config/*
 !shared/config/.gitkeep
 
-backend/app/video/scripts/*
-backend/app/language/classifier/results/*
-backend/app/language/classifier/weights/*
-backend/app/language/classifier/cache/*
-backend/app/language/ner/results/*
-backend/app/language/ner/weights/*
-backend/app/language/ner/cache/*
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/pnpm-debug.log*
+
+backend/app/video/scripts/
+backend/app/language/classifier/results/
+backend/app/language/classifier/weights/
+backend/app/language/classifier/cache/
+backend/app/language/ner/results/
+backend/app/language/ner/weights/
+backend/app/language/ner/cache/
 
 logs/files/*
 !logs/files/.gitkeep
