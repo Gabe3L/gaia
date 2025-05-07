@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
 const http = require('http');
@@ -16,6 +16,9 @@ function createWindow() {
   });
 
   mainWindow.loadURL('http://localhost:8000');
+  mainWindow.maximize(true);
+  
+  Menu.setApplicationMenu(null);
 }
 
 function startBackend() {
