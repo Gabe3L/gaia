@@ -28,7 +28,7 @@ scikit_learn==1.4.1.post1
 simpletransformers==0.70.1
 sounddevice==0.5.1
 SpeechRecognition==3.10.4
-spotipy==2.24.0
+spotipy==2.25.1
 torch==2.8.0.dev20250405+cu128
 transformers==4.51.3
 TTS==0.22.0
