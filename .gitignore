@@ -6,12 +6,13 @@ shared/admin/*
 shared/config/*
 !shared/config/.gitkeep
 
-frontend/node_modules/
-frontend/dist/
-frontend/build/
-frontend/npm-debug.log*
-frontend/yarn-debug.log*
-frontend/pnpm-debug.log*
+electron/node_modules/
+electron/dist/
+electron/build/
+electron/npm-debug.log*
+electron/yarn-debug.log*
+electron/pnpm-debug.log*
+electron/logs/
 
 backend/app/video/scripts/
 backend/app/language/classifier/results/
@@ -20,9 +21,8 @@ backend/app/language/classifier/cache/
 backend/app/language/ner/results/
 backend/app/language/ner/weights/
 backend/app/language/ner/cache/
-
-logs/files/*
-!logs/files/.gitkeep
+backend/logs/files/*
+backend/!logs/files/.gitkeep
 
 events.out.tfevents.*
 

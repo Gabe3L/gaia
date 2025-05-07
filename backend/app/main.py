@@ -17,8 +17,10 @@ stop_event = Event()
 speech_queue = Queue()
 command_queue = Queue()
 
-app.mount("/static", StaticFiles(directory="frontend/public"), name="static")
-html_path = Path(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'frontend', 'public', 'html')
+frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'frontend'))
+
+app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+html_path = Path(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'frontend', 'html')
 
 @app.post("/start-processing/")
 async def start_processing(background_tasks: BackgroundTasks):
