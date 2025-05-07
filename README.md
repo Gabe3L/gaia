@@ -17,13 +17,60 @@ GAIA aims to be a fully hands-free assistant useful for accessibility, productiv
 
 ## Prerequisites
 
-Ensure the following are installed on your system:
+### Software
 
-- [Python 3.12+](https://www.python.org/downloads/)
-- [CUDA 12.6+](https://developer.nvidia.com/cuda-toolkit-archive/) (Optional)
-- Pip package manager (`pip`)
-- A webcam (internal or USB)
-- A working microphone
+- **Operating System**:  
+  - **Windows** (10/11)
+  - **macOS** (Ventura, Sonoma, Sequoia)
+  - **Linux** (Ubuntu 22.04, other distributions may work with adjustments)
+
+- **Python 3.12+**:  
+  - Ensure Python 3.12 or later is installed for backend functionality.  
+  - [Download Python](https://www.python.org/downloads/)
+
+- **CUDA 12.6+ (Optional but Recommended)**:  
+  - CUDA is required for GPU acceleration, improving performance for tasks like hand gesture tracking.  
+  - [Download CUDA](https://developer.nvidia.com/cuda-toolkit-archive/)
+
+- **Node.js & NPM**:  
+  - Node.js and NPM are required for the frontend (Electron).  
+  - [Download Node.js](https://nodejs.org/en/download)
+
+### Peripherals
+
+- **Webcam**:  
+  - **Minimum**: 640p (SD) webcam  
+  - **Optional**: Disable "Hand Tracking" in settings
+  
+- **Microphone**:
+  - **Recommended**: Clear microphone for high accuracy
+  - **Optional**: Disable "Voice Input" in settings
+
+- **Audio Output**:  
+  - **Recommended**: Built-in speakers or headphones
+  - **Optional**: Disable "Voice Output" in settings
+
+- **Display**:
+  - **Recommended**: 1080p (FHD) Display
+  - **Optional**: Tell GAIA "Disable Display"
+
+### Hardware
+
+- **Processor (CPU)**:
+  - **Minimum**: Quad-core, 2.5 GHz
+  - **Recommended**: Eight core, 3GHz
+
+- **RAM**:  
+  - **Minimum**: 8 GB
+  - **Recommended**: 16 GB+
+
+- **Storage**:  
+  - **Minimum**: 10 GB of free disk space  
+  - **Recommended**: SSD for faster load times
+
+- **Graphics Processing Unit (GPU)**:
+  - **Recommended**: A modern GPU with CUDA capability (Compute Capability >= 3.0).  
+  - **Optional**: GPU acceleration can be disabled, though there will be a significant drop in performance
 
 ## Installation Guide
 
@@ -34,6 +81,8 @@ git clone https://github.com/Gabe3L/gaia.git
 cd gaia
 ```
 
+### Backend Setup
+
 Activate a virtual environment and install dependancies:
 ```bash
 pip install --upgrade pip
@@ -43,13 +92,24 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
+### Frontend Setup
+
+Install required packages for electron:
+```bash
+cd frontend
+npm install
+```
+
+### Starting the program
+
 Once installation and hardware setup are complete, run the program:
 
 ```bash
-python -m main.py
+cd frontend
+npm start
 ```
 
-# Permissions and Privacy
+## Permissions and Privacy
 When first running GAIA, your operating system may prompt for permission to access:
 
 - Microphone
@@ -60,7 +120,7 @@ On Windows, grant access by visiting:
 - ```Settings > Privacy & Security > Microphone```
 - ```Settings > Privacy & Security > Camera```
 
-# Troubleshooting
+## Troubleshooting
 
 | **Issue**                        | **Solution**                                                                     |
 |----------------------------------|----------------------------------------------------------------------------------|
@@ -71,7 +131,7 @@ On Windows, grant access by visiting:
 | Running scripts is disabled      | Run ```Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process``` in terminal |
 | General Issue                    | Check the log files located in logs/files                                        |
 
-# Current Features
+## Current Features
 - Google Calendar
 - Web Search (Google, Wikipedia, YouTube)
 - Geolocation and Local Weather Reports
@@ -84,7 +144,7 @@ On Windows, grant access by visiting:
 - System Resource Monitoring
 - Voice Typing
 
-# Planned Features
+## Planned Features
 
 Planned features for upcoming versions of GAIA include:
 
@@ -93,16 +153,14 @@ Planned features for upcoming versions of GAIA include:
 - Personalized assistant profiles
 - Metal GPU Support
 
-# License
+## License
 This project is licensed under the MIT License.
 See the [LICENSE](LICENSE) file for more information.
 
-# Support
-For questions, support, or collaboration inquiries, please contact:
+## Support
+For questions, support, or collaboration inquiries, please contact Gabe Lynch.
 
-Project Maintainer: Gabe Lynch
-
-## Contact Info
+### Contact Info
 - GitHub: https://github.com/Gabe3L/
 - Website: https://www.gabelynch.com/
 - Email: contact@gabelynch.com
