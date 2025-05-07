@@ -2,7 +2,7 @@ import os
 import datetime
 import subprocess
 
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 
 ################################################################
 

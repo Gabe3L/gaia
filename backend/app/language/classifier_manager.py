@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-from constants.language_config import LanguageConfig
+from backend.app.constants.language_config import LanguageConfig
 
 #############################################################
 

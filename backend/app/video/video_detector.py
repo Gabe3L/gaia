@@ -4,7 +4,7 @@ import torch
 import numpy as np
 from ultralytics import YOLO
 
-from constants.video_config import VideoConfig
+from backend.app.constants.video_config import VideoConfig
 
 ###############################################################
 

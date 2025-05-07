@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from typing import List, Tuple
 
-from constants.video_config import VideoConfig
+from backend.app.constants.video_config import VideoConfig
 
 
 class VideoDisplay:

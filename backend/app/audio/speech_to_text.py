@@ -5,7 +5,7 @@ import whisper
 import numpy as np
 from queue import Queue
 
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 from speech_recognition import Recognizer, Microphone, UnknownValueError
 
 ################################################################

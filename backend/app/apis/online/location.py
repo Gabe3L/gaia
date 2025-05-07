@@ -6,7 +6,7 @@ import webbrowser
 from geopy.geocoders import Nominatim
 from geopy.distance import great_circle
 
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 
 ################################################################
 

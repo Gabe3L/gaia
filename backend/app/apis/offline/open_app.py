@@ -3,7 +3,7 @@ import psutil
 
 import AppOpener
 
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 
 ################################################################
 

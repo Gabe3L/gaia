@@ -1,6 +1,6 @@
 import time
 from collections import deque
-from constants.video_config import VideoConfig
+from backend.app.constants.video_config import VideoConfig
 
 ################################################################
 

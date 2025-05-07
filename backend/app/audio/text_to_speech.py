@@ -1,16 +1,18 @@
 import os
 import time
-import torch
 import logging
-logging.getLogger("torch.distributed.elastic.multiprocessing.redirects").setLevel(logging.ERROR)
+logging.getLogger(
+    "torch.distributed.elastic.multiprocessing.redirects").setLevel(logging.ERROR)
 
+import torch
 import numpy as np
 from TTS.api import TTS
 import sounddevice as sd
 
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 
 ################################################################
+
 
 class TextToSpeech:
     def __init__(self):
@@ -19,10 +21,10 @@ class TextToSpeech:
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        time.sleep(10) #TODO: Find a better fix for GPU Memory
-        
+        time.sleep(10)  # TODO: Find a better fix for GPU Memory
+
         self.tts = TTS(
-            model_name="tts_models/en/ljspeech/tacotron2-DDC", 
+            model_name="tts_models/en/ljspeech/tacotron2-DDC",
             progress_bar=True).to(device)
 
     def speak(self, text):
@@ -47,6 +49,8 @@ class TextToSpeech:
         except Exception as e:
             self.logger.error(f"Audio playback failed: {e}")
 
+
 if __name__ == "__main__":
-    text_to_speech = TextToSpeech() 
-    text_to_speech.speak("Hello Gabe. My name is GAIA. I am pleased to be at your service!")
+    text_to_speech = TextToSpeech()
+    text_to_speech.speak(
+        "Hello Gabe. My name is GAIA. I am pleased to be at your service!")

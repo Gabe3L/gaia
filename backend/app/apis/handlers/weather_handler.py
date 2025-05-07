@@ -1,4 +1,4 @@
-from apis.online import weather
+from backend.app.apis.online import weather
 
 class WeatherHandler:
     def handle(self, user_command: dict, speaker):

@@ -1,4 +1,4 @@
-from apis.offline import note
+from backend.app.apis.offline import note
 
 class NoteHandler:
     def handle(self, user_command: dict, speaker):

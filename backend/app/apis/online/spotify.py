@@ -1,12 +1,11 @@
 import os
 import time
 import json
-import subprocess
 from typing import Optional, Dict, Any
 
 import spotipy
 
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 
 ################################################################
 

@@ -4,7 +4,7 @@ from math import log, pow, floor
 
 from GPUtil import getGPUs
 
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 
 ################################################################
 
@@ -53,4 +53,4 @@ def system_stats():
 ############################################################################
 
 if __name__ == "__main__":
-    logging.debug(system_stats())
+    logger.debug(system_stats())

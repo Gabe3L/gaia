@@ -1,4 +1,4 @@
-from apis.online import youtube
+from backend.app.apis.online import youtube
 
 class YouTubeHandler:
     def handle(self, user_command: dict, speaker):

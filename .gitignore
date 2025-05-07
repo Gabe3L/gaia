@@ -1,18 +1,18 @@
 __pycache__/
 *.py[cod]
 
-admin
-logs/files/*
-ideas.pdf
-gui.py
-video_ai/scripts
+shared/admin/*
+shared/config/*
 
-language/classifier/results/*
-language/classifier/weights/*
-language/classifier/cache/*
-language/ner/results/*
-language/ner/weights/*
-language/ner/cache/*
+backend/app/video/scripts/*
+backend/app/language/classifier/results/*
+backend/app/language/classifier/weights/*
+backend/app/language/classifier/cache/*
+backend/app/language/ner/results/*
+backend/app/language/ner/weights/*
+backend/app/language/ner/cache/*
+
+logs/files/*
 events.out.tfevents.*
 
 .cache

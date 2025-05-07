@@ -3,9 +3,9 @@ import json
 from typing import Dict
 from queue import Queue
 
-from apis.online.spotify import Spotify
-from logs.logging_setup import setup_logger
-from apis.offline.open_app import OpenApp
+from backend.logs.logging_setup import setup_logger
+from backend.app.apis.online.spotify import Spotify
+from backend.app.apis.offline.open_app import OpenApp
 
 class MusicHandler:
     def __init__(self):

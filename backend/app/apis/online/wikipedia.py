@@ -3,7 +3,7 @@ from typing import Optional, Any
 
 import wikipedia
 
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 
 ################################################################
 

@@ -3,7 +3,7 @@ import json
 import requests
 from typing import Optional
 
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 
 ################################################################
 

@@ -8,13 +8,13 @@ import cv2
 import numpy as np
 import torch
 
-from video.video_detector import YOLODetector
-from video.video_display import VideoDisplay
-from video.windows_control import Windows
-from video.fps_tracker import FPSTracker
+from backend.app.video.video_detector import YOLODetector
+from backend.app.video.video_display import VideoDisplay
+from backend.app.video.windows_control import Windows
+from backend.app.video.fps_tracker import FPSTracker
 
-from constants.video_config import VideoConfig
-from logs.logging_setup import setup_logger
+from backend.app.constants.video_config import VideoConfig
+from backend.logs.logging_setup import setup_logger
 
 ################################################################
 

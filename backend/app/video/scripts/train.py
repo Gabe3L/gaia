@@ -5,7 +5,7 @@ import shutil
 import roboflow
 from ultralytics import YOLO
 
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 
 ################################################################
 
@@ -13,6 +13,7 @@ file_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = setup_logger(file_name)
 
 ################################################################
+
 
 class ModelTrainer:
     def __init__(self):
@@ -37,7 +38,7 @@ class ModelTrainer:
         logger.info("Downloading Dataset")
 
         return self.project.download(
-            self.config["model_type"], 
+            self.config["model_type"],
             location="video_ai/datasets"
         )
 
@@ -71,9 +72,10 @@ class ModelTrainer:
             model.export(format="onnx", half=True, device="cuda")
             model.export(format="engine", half=True, device="cuda")
         except Exception as e:
-            logger.error(e)        
+            logger.error(e)
 
 ################################################################
+
 
 def main():
     trainer = ModelTrainer()

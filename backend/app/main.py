@@ -3,12 +3,12 @@ import traceback
 from typing import Optional
 from queue import Queue, Empty
 from threading import Thread, Event
-from logs.logging_setup import setup_logger
+from backend.logs.logging_setup import setup_logger
 
-from video.video_ai import Webcam
-from audio.speech_to_text import SpeechToText
-from audio.text_to_speech import TextToSpeech
-from language.text_to_action import TextToAction
+from backend.app.video.video_ai import Webcam
+from backend.app.audio.speech_to_text import SpeechToText
+from backend.app.audio.text_to_speech import TextToSpeech
+from backend.app.language.text_to_action import TextToAction
 
 ################################################################
 
