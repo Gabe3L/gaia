@@ -1,6 +1,7 @@
 const { app, BrowserWindow } = require('electron');
-const path = require('path');
 const { spawn } = require('child_process');
+const path = require('path');
+const http = require('http');
 
 let mainWindow;
 let backendProcess;
@@ -14,7 +15,7 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadURL('http://localhost:3000');
+  mainWindow.loadURL('http://localhost:8000');
 }
 
 function startBackend() {
@@ -35,9 +36,26 @@ function startBackend() {
   });
 }
 
+function waitForBackendReady(retries = 20) {
+  const tryConnect = () => {
+    http.get('http://localhost:8000', () => {
+      console.log('Backend is ready');
+      createWindow();
+    }).on('error', () => {
+      if (retries > 0) {
+        console.log('Waiting for backend...');
+        setTimeout(() => waitForBackendReady(retries - 1), 1000);
+      } else {
+        console.error('Backend failed to start');
+      }
+    });
+  };
+  tryConnect();
+}
+
 app.whenReady().then(() => {
   startBackend();
-  setTimeout(createWindow, 5000);
+  waitForBackendReady();
 });
 
 app.on('window-all-closed', () => {

@@ -1,0 +1,115 @@
+@import url("constants.css");
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  background: var(--black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  line-height: 1.8;
+  color: var(--white);
+}
+
+a {
+  color: var(--white);
+  text-decoration: none;
+  transition: .3s all ease;
+}
+
+a:hover {
+  color: var(--light);
+}
+
+button:focus {
+  outline: 1px dotted;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: white;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.75rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow: visible;
+}
+
+nav {
+  display: flex;
+  padding: 0.5rem 1rem;
+}
+
+.section {
+  padding: 7em 0;
+  position: relative;
+}
+
+@media (max-width: 767.98px) {
+  .section {
+    padding: 6em 0;
+  }
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 90vw;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .container {
+    max-width: 90vw;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 75vw;
+  }
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+}

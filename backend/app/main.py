@@ -1,5 +1,10 @@
+import os
+from pathlib import Path
 from queue import Queue
 from threading import Event
+
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, BackgroundTasks
 from backend.app.processor import Gaia, ThreadManager
 
@@ -11,6 +16,9 @@ thread_manager = ThreadManager(gaia)
 stop_event = Event()
 speech_queue = Queue()
 command_queue = Queue()
+
+app.mount("/static", StaticFiles(directory="frontend/public"), name="static")
+html_path = Path(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'frontend', 'public', 'html')
 
 @app.post("/start-processing/")
 async def start_processing(background_tasks: BackgroundTasks):
@@ -26,4 +34,4 @@ async def stop_processing():
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello from FastAPI!"}
+    return FileResponse(html_path / "home.html")
