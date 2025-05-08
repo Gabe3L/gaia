@@ -22,17 +22,15 @@ frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 app.mount("/static", StaticFiles(directory=frontend_path), name="static")
 html_path = Path(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'frontend', 'html')
 
-@app.post("/start-processing/")
-async def start_processing(background_tasks: BackgroundTasks):
-    background_tasks.add_task(thread_manager.start_all_threads, stop_event, speech_queue, command_queue)
+@app.post("/start-thread/{thread_name}")
+async def start_named_thread(thread_name: str, background_tasks: BackgroundTasks):
+    background_tasks.add_task(thread_manager.start_thread, thread_name, speech_queue, command_queue)
+    return {"message": f"Started thread: {thread_name}"}
 
-    return {"message": "Processing started!"}
-
-@app.post("/stop-processing/")
-async def stop_processing():
-    stop_event.set()
-    thread_manager.close_all_threads()
-    return {"message": "Processing stopped!"}
+@app.post("/stop-thread/{thread_name}")
+async def stop_named_thread(thread_name: str):
+    thread_manager.stop_thread(thread_name)
+    return {"message": f"Stopped thread: {thread_name}"}
 
 @app.get("/")
 def read_root():

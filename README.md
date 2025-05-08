@@ -96,7 +96,6 @@ pip install -r requirements.txt
 
 Install required packages for electron:
 ```bash
-cd frontend
 npm install
 ```
 
@@ -105,7 +104,6 @@ npm install
 Once installation and hardware setup are complete, run the program:
 
 ```bash
-cd frontend
 npm start
 ```
 

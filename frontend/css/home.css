@@ -70,12 +70,43 @@ body {
     object-fit: cover;
     box-shadow: 0 0 12px var(--primary);
     margin-bottom: 1rem;
-  }
+}
 
 .gaia-name {
     font-size: 5rem;
     font-weight: 600;
     color: var(--white);
+}
+
+.controls {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: var(--secondary-light);
+    border-radius: 8px;
+    width: 100%;
+}
+
+.controls h3 {
+    color: var(--black);
+    text-align: center;
+    font-weight: 700;
+}
+
+.controls button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    padding: 10px;
+    background-color: var(--secondary-dark-hover);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.controls button:hover {
+    background-color: var(--secondary-dark);
 }
 
 .widgets {

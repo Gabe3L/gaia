@@ -1,7 +1,7 @@
 import os
 import traceback
-from typing import Optional
 from queue import Queue, Empty
+from typing import Optional, Dict
 from threading import Thread, Event
 
 from backend.logs.logging_setup import setup_logger
@@ -72,32 +72,43 @@ class ThreadManager():
     def __init__(self, gaia: Gaia):
         self.logger = gaia.logger
         self.gaia = gaia
-        self.threads: list[Thread] = []
+        self.threads: Dict[str, Thread] = {}
+        self.running_flags: Dict[str, Event] = {}
 
-    def start_all_threads(self, stop_event: Event, speech_queue: Queue, command_queue: Queue) -> None:
-        try:
-            self.threads = [
-                Thread(target=self.gaia.handle_performing_actions,
-                       args=(stop_event, speech_queue, command_queue)),
-                Thread(target=self.gaia.handle_speech_to_text, args=(
-                    stop_event, speech_queue, command_queue)),
-                Thread(target=self.gaia.handle_text_to_speech,
-                       args=(stop_event, speech_queue)),
-                Thread(target=self.gaia.handle_camera,
-                       args=(stop_event, speech_queue))
-            ]
+    def start_thread(self, name: str, speech_queue: Queue, command_queue: Queue):
+        if name in self.threads and self.threads[name].is_alive():
+            self.logger.info(f"Thread '{name}' is already running.")
+            return
 
-            for thread in self.threads:
-                thread.start()
+        stop_event = Event()
+        self.running_flags[name] = stop_event
 
-            self.logger.info("All threads started successfully.")
-        except Exception as e:
-            self.logger.error(f'Failed to start threads: {str(e)}')
+        match name:
+            case "performing_actions":
+                thread = Thread(target=self.gaia.handle_performing_actions, args=(stop_event, speech_queue, command_queue))
+            case "speech_to_text":
+                thread = Thread(target=self.gaia.handle_speech_to_text, args=(stop_event, speech_queue, command_queue))
+            case "text_to_speech":
+                thread = Thread(target=self.gaia.handle_text_to_speech, args=(stop_event, speech_queue))
+            case "camera":
+                thread = Thread(target=self.gaia.handle_camera, args=(stop_event, speech_queue))
+            case _:
+                self.logger.error(f"No such thread: {name}")
+                return
 
-    def close_all_threads(self):
-        for thread in self.threads:
-            thread.join()
-        self.logger.info("All threads joined and closed.")
+        thread.start()
+        self.threads[name] = thread
+        self.logger.info(f"Thread '{name}' started.")
+
+    def stop_thread(self, name: str):
+        if name in self.running_flags:
+            self.running_flags[name].set()
+            self.threads[name].join()
+            del self.threads[name]
+            del self.running_flags[name]
+            self.logger.info(f"Thread '{name}' stopped.")
+        else:
+            self.logger.warning(f"Thread '{name}' is not running.")
 
 
 ################################################################

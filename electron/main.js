@@ -15,7 +15,10 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadURL('http://localhost:8000');
+  mainWindow.webContents.session.clearCache().then(() => { // TODO: Remove for prod
+    mainWindow.loadURL('http://localhost:8000');
+  });
+
   mainWindow.maximize(true);
   
   Menu.setApplicationMenu(null);

@@ -14,8 +14,17 @@
   <div class="main">
     <div class="left-panel">
       <video id="webcam" autoplay muted></video>
+
+      <div class="controls">
+        <h3>Feature Toggles</h3>
+        <button onclick="toggleThread('camera')">Camera</button>
+        <button onclick="toggleThread('speech_to_text')">Speech-to-Text</button>
+        <button onclick="toggleThread('text_to_speech')">Text-to-Speech</button>
+        <button onclick="toggleThread('performing_actions')">Performing Actions</button>
+      </div>
+
       <div class="status" id="statusMessages">
-        <p>System OK. Awaiting command...</p>
+        <p>System OK. Awaiting command.</p>
       </div>
     </div>
 
@@ -36,25 +45,7 @@
     <div class="widget" id="widget3">Widget 3</div>
     <div class="widget" id="widget4">Widget 4</div>
   </div>
-
-  <script>
-    const webcam = document.getElementById('webcam');
-    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-      .then(stream => { webcam.srcObject = stream; })
-      .catch(err => {
-        document.getElementById("statusMessages").innerHTML += `<p>Error: ${err.message}</p>`;
-      });
-
-    function updateStatus(msg) {
-      const statusDiv = document.getElementById('statusMessages');
-      statusDiv.innerHTML += `<p>${msg}</p>`;
-      statusDiv.scrollTop = statusDiv.scrollHeight;
-    }
-
-    function updateGAIAResponse(text) {
-      const responseBox = document.getElementById('gaiaResponse');
-      responseBox.innerHTML = `<p>${text}</p>`;
-    }
-  </script>
+ 
+  <script src="/static/js/home.js"></script>
 </body>
 </html>

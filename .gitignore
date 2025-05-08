@@ -6,13 +6,12 @@ shared/admin/*
 shared/config/*
 !shared/config/.gitkeep
 
-electron/node_modules/
-electron/dist/
-electron/build/
-electron/npm-debug.log*
-electron/yarn-debug.log*
-electron/pnpm-debug.log*
-electron/logs/
+node_modules/
+dist/
+out/
+build/
+*.log
+*.tsbuildinfo
 
 backend/app/video/scripts/
 backend/app/language/classifier/results/

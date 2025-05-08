@@ -28,8 +28,17 @@ class Spotify:
         )
 
     def load_config(self) -> None:
-        with open("admin/spotify_creds.json", "r") as creds:
-            credentials = json.load(creds)
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+
+        creds_path = os.path.join(base_dir, "..", "..", "..", "..", "shared", "admin", "spotify_creds.json")
+
+        try:
+            with open(creds_path, "r") as creds:
+                credentials = json.load(creds)
+        except FileNotFoundError:
+            logger.error(f"Missing Spotify credentials file at {creds_path}")
+            raise FileNotFoundError(f"Expected credentials at: {creds_path}")
+
         self.client_id = credentials["client_id"]
         self.client_secret = credentials["client_secret"]
         self.redirect_uri = credentials["redirect_uri"]

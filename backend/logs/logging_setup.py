@@ -4,7 +4,7 @@ import logging
 LOG_LEVEL: int = logging.DEBUG
 
 def setup_logger(file_name):
-    log_dir = "logs/files"
+    log_dir = "backend/logs/files"
     os.makedirs(log_dir, exist_ok=True)
     
     log_file_path = os.path.join(log_dir, f"{file_name}.log")
