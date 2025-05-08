@@ -2,14 +2,6 @@ body {
     flex-direction: column;
 }
 
-.main {
-    flex: 1;
-    display: flex;
-    padding: 1rem;
-    gap: 1rem;
-    justify-content: center;
-}
-
 .left-panel,
 .right-panel,
 .center-panel {
@@ -46,6 +38,7 @@ body {
     width: 100%;
     height: 100px;
     overflow-y: auto;
+    margin-top: 10px;
 }
 
 .response-box {
@@ -80,6 +73,7 @@ body {
 
 .controls {
     margin-top: 10px;
+    margin-bottom: 10px;
     padding: 10px;
     background-color: var(--secondary-light);
     border-radius: 8px;
@@ -129,16 +123,25 @@ body {
     justify-content: center;
 }
 
-@media (max-width: 900px) {
-    .main {
-        flex-direction: column;
+@media (max-width: 991.98px) {    
+    .container {
+        display: block;
+    }
+
+    .center-panel{
+        order: 0;
+    }
+
+    .left-panel{
+        order: 1;
+    }
+
+    .right-panel{
+        order: 2;
     }
 
     .widgets {
         grid-template-columns: repeat(2, 1fr);
-    }
-
-    .center-panel {
-        display: none;
+        order: 3;
     }
 }

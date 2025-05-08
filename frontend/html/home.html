@@ -7,11 +7,17 @@
 
   <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
 
-  <link rel="stylesheet" href="/static/css/styles.css" />
-  <link rel="stylesheet" href="/static/css/home.css" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/home.css" />
 </head>
 <body>
-  <div class="main">
+  <div class="sidebar">
+    <button>
+
+    </button>
+  </div>
+
+  <div class="container">
     <div class="left-panel">
       <video id="webcam" autoplay muted></video>
 
@@ -29,7 +35,7 @@
     </div>
 
     <div class="center-panel">
-      <img src="/static/assets/images/logo.webp" alt="GAIA Logo" class="gaia-logo" />
+      <img src="../assets/images/logo.webp" alt="GAIA Logo" class="gaia-logo" />
     </div>
 
     <div class="right-panel">
@@ -37,15 +43,15 @@
         <p>Hello Gabe. What would you like me to do?</p>
       </div>
     </div>
-  </div>
 
-  <div class="widgets">
-    <div class="widget" id="widget1">Widget 1</div>
-    <div class="widget" id="widget2">Widget 2</div>
-    <div class="widget" id="widget3">Widget 3</div>
-    <div class="widget" id="widget4">Widget 4</div>
+    <div class="widgets">
+      <div class="widget" id="widget1">Widget 1</div>
+      <div class="widget" id="widget2">Widget 2</div>
+      <div class="widget" id="widget3">Widget 3</div>
+      <div class="widget" id="widget4">Widget 4</div>
+    </div>
+
   </div>
- 
-  <script src="/static/js/home.js"></script>
+  <script src="../js/home.js"></script>
 </body>
 </html>
