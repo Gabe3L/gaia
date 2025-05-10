@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GAIA | Home</title>
 
   <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
@@ -10,48 +11,51 @@
   <link rel="stylesheet" href="../css/styles.css" />
   <link rel="stylesheet" href="../css/home.css" />
 </head>
+
 <body>
+  <nav>
+    <div class="nav-left">
+      <button>⚙️</button>
+    </div>
+    <div class="nav-center">
+      <button>🔍</button>
+      <p>Type to GAIA</p>
+    </div>
+    <div class="nav-right">
+      <button>–</button>
+      <button>☐</button>
+      <button>✖</button>
+    </div>
+  </nav>
+
+  <div class="widgets">
+    <div class="widget" id="widget1"></div>
+    <div class="widget" id="widget2"></div>
+    <div class="widget" id="widget3"></div>
+    <div class="widget" id="widget4"></div>
+    <div class="widget" id="widget5"></div>
+    <div class="widget" id="widget6"></div>
+    <div class="widget" id="widget7"></div>
+    <video class="widget" id="webcam" autoplay muted></video>
+  </div>
+
   <div class="sidebar">
     <button>
 
     </button>
   </div>
 
-  <div class="container">
-    <div class="left-panel">
-      <video id="webcam" autoplay muted></video>
-
-      <div class="controls">
-        <h3>Feature Toggles</h3>
-        <button onclick="toggleThread('camera')">Camera</button>
-        <button onclick="toggleThread('speech_to_text')">Speech-to-Text</button>
-        <button onclick="toggleThread('text_to_speech')">Text-to-Speech</button>
-        <button onclick="toggleThread('performing_actions')">Performing Actions</button>
-      </div>
-
-      <div class="status" id="statusMessages">
-        <p>System OK. Awaiting command.</p>
-      </div>
+  <div class="control-bar">
+    <button id="menu-button">🪟</button>
+    <div class="control-buttons">
+      <button>🎥</button>
+      <button>🎤</button>
+      <button>🔊</button>
     </div>
-
-    <div class="center-panel">
-      <img src="../assets/images/logo.webp" alt="GAIA Logo" class="gaia-logo" />
-    </div>
-
-    <div class="right-panel">
-      <div class="response-box" id="gaiaResponse">
-        <p>Hello Gabe. What would you like me to do?</p>
-      </div>
-    </div>
-
-    <div class="widgets">
-      <div class="widget" id="widget1">Widget 1</div>
-      <div class="widget" id="widget2">Widget 2</div>
-      <div class="widget" id="widget3">Widget 3</div>
-      <div class="widget" id="widget4">Widget 4</div>
-    </div>
-
+    <button id="transcription-button">📜</button>
   </div>
+
   <script src="../js/home.js"></script>
 </body>
+
 </html>

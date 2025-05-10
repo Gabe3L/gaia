@@ -1,19 +1,15 @@
 @import url("constants.css");
 
-body,
-html {
-  height: 100%;
+body {
   margin: 0;
   background: var(--black);
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-body {
   font-family: "Poppins", sans-serif;
   line-height: 1.8;
   color: var(--white);
+  flex-direction: column;
 }
 
 a {
@@ -24,10 +20,6 @@ a {
 
 a:hover {
   color: var(--light);
-}
-
-button:focus {
-  outline: 1px dotted;
 }
 
 h1,
@@ -65,51 +57,17 @@ button {
 
 nav {
   display: flex;
-  padding: 0.5rem 1rem;
-}
-
-.section {
-  padding: 7em 0;
   position: relative;
-}
-
-@media (max-width: 767.98px) {
-  .section {
-    padding: 6em 0;
-  }
-}
-
-.container {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  position: relative;
-}
-
-@media (max-width: 768px) {
-  .container {
-    max-width: 90vw;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991.98px) {
-  .container {
-    max-width: 90vw;
-  }
-}
-
-@media (min-width: 992px) {
-  .container {
-    max-width: 75vw;
-  }
-}
-
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
+  align-items: center;
   justify-content: center;
+  padding: 10px;
+  background-color: var(--black);
+}
+
+nav button {
+  background: none;
+  color: white;
+  border: none;
+  font-size: 16px;
+  margin: 0 5px;
 }
