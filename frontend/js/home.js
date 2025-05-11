@@ -7,7 +7,7 @@ const threadStates = {
 
 function toggleThread(name) {
     if (!(name in threadStates)) {
-        updateStatus(`Unknown thread: ${name}`);
+        console.error(`Unknown thread: ${name}`);
         return;
     }
 
@@ -22,10 +22,10 @@ function toggleThread(name) {
         .then(data => {
             threadStates[name] = !isRunning;
             const action = isRunning ? "Stopped" : "Started";
-            updateStatus(`${action} ${formatThreadName(name)} thread.`);
+            console.error(`${action} ${formatThreadName(name)} thread.`);
         })
         .catch(err => {
-            updateStatus(`Error toggling ${formatThreadName(name)}: ${err.message}`);
+            console.error(`Error toggling ${formatThreadName(name)}: ${err.message}`);
         });
 }
 
@@ -36,22 +36,9 @@ function formatThreadName(name) {
         .join(' ');
 }
 
-function updateStatus(msg) {
-    const statusDiv = document.getElementById('statusMessages');
-    const newEntry = document.createElement('p');
-    newEntry.textContent = msg;
-    statusDiv.appendChild(newEntry);
-    statusDiv.scrollTop = statusDiv.scrollHeight;
-}
-
-function updateGAIAResponse(text) {
-    const responseBox = document.getElementById('gaiaResponse');
-    responseBox.innerHTML = `<p>${text}</p>`;
-}
-
 const webcam = document.getElementById('webcam');
 navigator.mediaDevices.getUserMedia({ video: true, audio: false })
     .then(stream => { webcam.srcObject = stream; })
     .catch(err => {
-        updateStatus(`Webcam error: ${err.message}`);
+        console.error(`Webcam error: ${err.message}`);
     });
