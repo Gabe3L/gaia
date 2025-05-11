@@ -57,11 +57,11 @@ button {
 
 nav {
   display: flex;
-  position: relative;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 10px;
   background-color: var(--black);
+  height: 60px;
 }
 
 nav button {

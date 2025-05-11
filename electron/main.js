@@ -42,18 +42,20 @@ function startBackend() {
   });
 }
 
-function waitForBackendReady(retries = 20) {
+function waitForBackendReady() {
+  let dotCount = 1;
+
   const tryConnect = () => {
     http.get('http://localhost:8000', () => {
       console.log('Backend is ready');
       createWindow();
     }).on('error', () => {
-      if (retries > 0) {
-        console.log('Waiting for backend...');
-        setTimeout(() => waitForBackendReady(retries - 1), 1000);
-      } else {
-        console.error('Backend failed to start');
-      }
+      process.stdout.write('Waiting for backend' + '.'.repeat(dotCount) + '   ');
+      process.stdout.write('\r');
+      
+      dotCount = (dotCount % 3) + 1;
+
+      setTimeout(tryConnect, 1000);
     });
   };
   tryConnect();
