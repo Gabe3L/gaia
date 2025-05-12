@@ -1,7 +1,9 @@
 import os
+import asyncio
 
 import python_weather
 
+import backend.app.apis.online.location as location
 from backend.logs.logging_setup import setup_logger
 
 ################################################################
@@ -19,5 +21,32 @@ def fetch_weather(city: str) -> str:
 
         return weather_report
 
+async def get_user_temperature() -> str:
+    city = location.get_city()
+
+    async with python_weather.Client(unit=python_weather.METRIC) as client:
+        weather = await client.get(city)
+
+        return weather.temperature
+
+async def get_user_weather_description() -> str:
+    city = location.get_city()
+
+    async with python_weather.Client(unit=python_weather.METRIC) as client:
+        weather = await client.get(city)
+        return weather.description
+    
+async def get_user_precipitation() -> str:
+    city = location.get_city()
+
+    async with python_weather.Client(unit=python_weather.METRIC) as client:
+        weather = await client.get(city)
+        return weather.precipitation
+
+################################################################
+
 if __name__ == '__main__':
-    logger.debug(fetch_weather('London, Ontario'))
+    if os.name == 'nt':
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+    print(asyncio.run(get_user_weather_description()))

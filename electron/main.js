@@ -16,19 +16,19 @@ function createWindow() {
   });
 
   mainWindow.webContents.session.clearCache().then(() => { // TODO: Remove for prod
-    mainWindow.loadURL('http://localhost:8000');
+    mainWindow.loadURL('http://127.0.0.1:8000');
   });
 
   mainWindow.maximize(true);
-  
+
   Menu.setApplicationMenu(null);
 }
 
 function startBackend() {
   const scriptPath = path.resolve(__dirname, '..', 'backend', 'start.py');
-  
+
   backendProcess = spawn('python', [scriptPath]);
-  
+
   backendProcess.stdout.on('data', (data) => {
     console.log(`[Backend]: ${data}`);
   });
@@ -46,13 +46,13 @@ function waitForBackendReady() {
   let dotCount = 1;
 
   const tryConnect = () => {
-    http.get('http://localhost:8000', () => {
+    http.get('http://127.0.0.1:8000', () => {
       console.log('Backend is ready');
       createWindow();
     }).on('error', () => {
       process.stdout.write('Waiting for backend' + '.'.repeat(dotCount) + '   ');
       process.stdout.write('\r');
-      
+
       dotCount = (dotCount % 3) + 1;
 
       setTimeout(tryConnect, 1000);

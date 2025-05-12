@@ -1,3 +1,5 @@
+import * as widgets from '/static/js/widgets.js';
+
 const threadStates = {
     camera: false,
     speech_to_text: false,
@@ -36,9 +38,9 @@ function formatThreadName(name) {
         .join(' ');
 }
 
-const webcam = document.getElementById('webcam');
-navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-    .then(stream => { webcam.srcObject = stream; })
-    .catch(err => {
-        console.error(`Webcam error: ${err.message}`);
-    });
+document.addEventListener('DOMContentLoaded', function () {
+    console.log("DOM is fully loaded");
+
+    setInterval(widgets.applyWidgetConfig);
+    setInterval(widgets.updateWidgetData, 1000);
+}); 
