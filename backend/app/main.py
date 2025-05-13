@@ -1,14 +1,15 @@
 import os
 import asyncio
-from pathlib import Path
 from queue import Queue
+from typing import List
+from pathlib import Path
 from threading import Event
 
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, BackgroundTasks
-from backend.app.processor import Gaia, ThreadManager
+from fastapi import FastAPI, BackgroundTasks, WebSocket, WebSocketDisconnect
 
+from backend.app.processor import Gaia, ThreadManager
 from backend.app.apis.online import *
 
 #####################################################################
@@ -29,8 +30,12 @@ app.mount("/static", StaticFiles(directory=frontend_path), name="static")
 html_path = Path(os.path.dirname(os.path.abspath(__file__)),
                  '..', '..', 'frontend', 'html')
 
-#####################################################################
+connected_clients: List[WebSocket] = []
 
+if os.name == 'nt':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+#####################################################################
 
 @app.get("/")
 def read_root():
@@ -50,19 +55,33 @@ async def stop_named_thread(thread_name: str):
     return {"message": f"Stopped thread: {thread_name}"}
 
 # Widgets
-@app.get("/weather")
-async def get_weather():
-    if os.name == 'nt':
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+@app.websocket("/ws/weather")
+async def websocket_weather(websocket: WebSocket):
+    await websocket.accept()
+    connected_clients.append(websocket)
 
-    temperature = await weather.get_user_temperature()
-    description = await weather.get_user_weather_description()
-    precipitation = await weather.get_user_precipitation()
-    user_location = location.get_city()
+    try:
+        while True:
+            temperature = await weather.get_user_temperature()
+            description = await weather.get_user_weather_description()
+            precipitation = await weather.get_user_precipitation()
+            user_location = location.get_city()
 
-    return {
-        "temperature": temperature,
-        "description": description,
-        "location": user_location,
-        "precipitation": precipitation
-    }
+            data = {
+                "temperature": temperature,
+                "description": description,
+                "location": user_location,
+                "precipitation": precipitation
+            }
+            disconnected = []
+            for client in connected_clients:
+                try:
+                    await client.send_json(data)
+                except WebSocketDisconnect:
+                    disconnected.append(client)
+            for client in disconnected:
+                connected_clients.remove(client)
+
+            await asyncio.sleep(300) # 5 Minutes
+    except WebSocketDisconnect:
+        connected_clients.remove(websocket)

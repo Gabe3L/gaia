@@ -19,28 +19,29 @@ export async function applyWidgetConfig() {
     }
 }
 
-export function updateWidgetData() {
-    const weatherDiv = document.getElementById('weather');
-    if (!weatherDiv) return;
+export function initUpdatingWidgetData() {
+    const socket = new WebSocket("ws://127.0.0.1:8000/ws/weather");
 
-    fetch('http://127.0.0.1:8000/weather', {
-        method: 'GET'
-    })
-        .then(response => {
-            if (!response.ok) throw new Error('Network response error');
-            return response.json();
-        })
-        .then(data => {
-            const { location, temperature, precipitation, description } = data;
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        const { location, temperature, precipitation, description } = data;
 
-            weatherDiv.style.setProperty('--location', `"${location}"`);
-            weatherDiv.style.setProperty('--temperature', `"${temperature} °C"`);
-            weatherDiv.style.setProperty('--precipitation', `"${precipitation} %"`);
-            weatherDiv.style.setProperty('--description', `"${description} °C"`);
-        })
-        .catch(error => {
-            console.error('Error fetching weather data:', error);
-        });
+        const weatherDiv = document.getElementById('weather');
+        if (!weatherDiv) return;
+
+        weatherDiv.style.setProperty('--location', `"${location}"`);
+        weatherDiv.style.setProperty('--temperature', `"${temperature} °C"`);
+        weatherDiv.style.setProperty('--precipitation', `"${precipitation} %"`);
+        weatherDiv.style.setProperty('--description', `"${description}"`);
+    };
+
+    socket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+    };
+
+    socket.onclose = () => {
+        console.warn("Weather WebSocket closed.");
+    };
 
     const webcamDiv = document.getElementById('webcam');
     if (!webcamDiv) return;

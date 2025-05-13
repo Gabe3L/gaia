@@ -24,7 +24,7 @@ function toggleThread(name) {
         .then(data => {
             threadStates[name] = !isRunning;
             const action = isRunning ? "Stopped" : "Started";
-            console.error(`${action} ${formatThreadName(name)} thread.`);
+            console.info(`${action} ${formatThreadName(name)} thread.`);
         })
         .catch(err => {
             console.error(`Error toggling ${formatThreadName(name)}: ${err.message}`);
@@ -41,6 +41,7 @@ function formatThreadName(name) {
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM is fully loaded");
 
+    widgets.initUpdatingWidgetData();
+
     setInterval(widgets.applyWidgetConfig);
-    setInterval(widgets.updateWidgetData, 1000);
 }); 
