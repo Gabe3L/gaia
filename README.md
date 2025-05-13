@@ -15,6 +15,9 @@ GAIA aims to be a fully hands-free assistant useful for accessibility, productiv
 - **Text-to-Speech Feedback**  
   GAIA responds verbally to user requests using a realistic voice engine, completing the interaction loop.
 
+- **Responsive and Customizable UI**
+  All features of the app are viewable and customizable through a modern and clean user interface.
+
 ## Prerequisites
 
 ### Software
@@ -32,8 +35,8 @@ GAIA aims to be a fully hands-free assistant useful for accessibility, productiv
   - CUDA is required for GPU acceleration, improving performance for tasks like hand gesture tracking.  
   - [Download CUDA](https://developer.nvidia.com/cuda-toolkit-archive/)
 
-- **Node.js & NPM**:  
-  - Node.js and NPM are required for the frontend (Electron).  
+- **Node.js LTS v22**:  
+  - Node.js is required for the frontend (Electron).  
   - [Download Node.js](https://nodejs.org/en/download)
 
 ### Peripherals
@@ -51,7 +54,7 @@ GAIA aims to be a fully hands-free assistant useful for accessibility, productiv
   - **Optional**: Disable "Voice Output" in settings
 
 - **Display**:
-  - **Recommended**: 1080p (FHD) Display
+  - **Recommended**: 1080p (FHD) Resolution or Higher
   - **Optional**: Tell GAIA "Disable Display"
 
 ### Hardware
@@ -70,7 +73,7 @@ GAIA aims to be a fully hands-free assistant useful for accessibility, productiv
 
 - **Graphics Processing Unit (GPU)**:
   - **Recommended**: A modern GPU with CUDA capability (Compute Capability >= 3.0).  
-  - **Optional**: GPU acceleration can be disabled, though there will be a significant drop in performance
+  - **Optional**: GPU acceleration can be disabled, though expect a significant drop in performance
 
 ## Installation Guide
 
@@ -127,7 +130,7 @@ On Windows, grant access by visiting:
 | Hand tracking is slow or laggy   | Improve lighting and ensure CUDA is installed                                    |
 | Text-to-speech is silent         | Ensure your speaker is set as the default audio output                           |
 | Running scripts is disabled      | Run ```Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process``` in terminal |
-| General Issue                    | Check the log files located in logs/files                                        |
+| Recieved an error message        | Check the log files located in backend/logs/files and contact Gabe Lynch         |
 
 ## Current Features
 - Google Calendar
@@ -147,7 +150,7 @@ On Windows, grant access by visiting:
 Planned features for upcoming versions of GAIA include:
 
 - IoT integration for smart home control
-- HUD available through a shortcut
+- Mini HUD available through a shortcut
 - Personalized assistant profiles
 - Metal GPU Support
 
