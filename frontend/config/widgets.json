@@ -1,44 +1,60 @@
 {
-  "widgets": [
-    {
-      "id": "weather",
+  "widgets": {
+    "weather": {
       "gridWidth": 2,
-      "gridHeight": 2
+      "gridHeight": 2,
+      "xLocation": 0,
+      "yLocation": 0,
+      "visible": true
     },
-    {
-      "id": "none",
+    "spotify": {
       "gridWidth": 1,
-      "gridHeight": 1
+      "gridHeight": 1,
+      "xLocation": 2,
+      "yLocation": 0,
+      "visible": true
     },
-    {
-      "id": "none",
+    "youtube": {
       "gridWidth": 1,
-      "gridHeight": 1
+      "gridHeight": 1,
+      "xLocation": 3,
+      "yLocation": 0,
+      "visible": true
     },
-    {
-      "id": "none",
+    "clock": {
       "gridWidth": 1,
-      "gridHeight": 1
+      "gridHeight": 1,
+      "xLocation": 2,
+      "yLocation": 1,
+      "visible": true
     },
-    {
-      "id": "none",
+    "webcam": {
       "gridWidth": 1,
-      "gridHeight": 1
+      "gridHeight": 1,
+      "xLocation": 3,
+      "yLocation": 1,
+      "visible": true
     },
-    {
-      "id": "none",
-      "gridWidth": 1,
-      "gridHeight": 1
+    "calendar": {
+      "gridWidth": null,
+      "gridHeight": null,
+      "xLocation": null,
+      "yLocation": null,
+      "visible": false
     },
-    {
-      "id": "none",
-      "gridWidth": 1,
-      "gridHeight": 1
+    "system": {
+      "gridWidth": null,
+      "gridHeight": null,
+      "xLocation": null,
+      "yLocation": null,
+      "visible": false
     },
-    {
-      "id": "none",
-      "gridWidth": 1,
-      "gridHeight": 1
+    "email": {
+      "gridWidth": null,
+      "gridHeight": null,
+      "xLocation": null,
+      "yLocation": null,
+      "visible": false
     }
-  ]
+  }
 }

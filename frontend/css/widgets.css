@@ -24,46 +24,19 @@
     cursor: pointer;
 }
 
-.w-1 {
-    grid-column: span 1;
-}
-
-.w-2 {
-    grid-column: span 2;
-}
-
-.h-1 {
-    grid-row: span 1;
-}
-
-.h-2 {
-    grid-row: span 2;
-}
-
 #weather {
     background: linear-gradient(to top, #1e90f5, #00f2fe);
     color: var(--black);
-
-    --location: 'Unknown';
-    --temperature: '0°C';
-    --precipitation: '0%';
-    --description: 'Unknown';
 }
 
-#weather::before {
-    content: var(--location);
-    display: block;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 8px;
+#youtube {
+    background: conic-gradient(from 90deg, #680000, #f51e1e);
+    color: var(--black);
 }
 
-#weather::after {
-    content: var(--temperature) " | Precipitation: " var(--precipitation) " | " var(--description);
-    display: block;
-    font-size: 1.2rem;
-    margin-top: 4px;
-    opacity: 0.9;
+#spotify {
+    background: conic-gradient(from 90deg, #195800, #00af00);
+    color: var(--black);
 }
 
 #none {
