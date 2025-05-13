@@ -14,7 +14,7 @@
       "yLocation": 0,
       "visible": true
     },
-    "youtube": {
+    "calendar": {
       "gridWidth": 1,
       "gridHeight": 1,
       "xLocation": 3,
@@ -34,13 +34,6 @@
       "xLocation": 3,
       "yLocation": 1,
       "visible": true
-    },
-    "calendar": {
-      "gridWidth": null,
-      "gridHeight": null,
-      "xLocation": null,
-      "yLocation": null,
-      "visible": false
     },
     "system": {
       "gridWidth": null,

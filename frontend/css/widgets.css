@@ -29,11 +29,6 @@
     color: var(--black);
 }
 
-#youtube {
-    background: conic-gradient(from 90deg, #680000, #f51e1e);
-    color: var(--black);
-}
-
 #spotify {
     background: conic-gradient(from 90deg, #195800, #00af00);
     color: var(--black);
