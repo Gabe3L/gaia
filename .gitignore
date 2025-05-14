@@ -13,8 +13,6 @@ build/
 *.log
 *.tsbuildinfo
 
-idea.png
-
 backend/app/video/scripts/
 backend/app/language/classifier/results/
 backend/app/language/classifier/weights/

@@ -46,35 +46,59 @@ export function initUpdatingWidgetData() {
 function updateWeatherWidget() {
     const socket = new WebSocket("ws://127.0.0.1:8000/ws/weather");
 
+    const weatherDiv = document.getElementById('weather');
+    const locationEl = weatherDiv?.querySelector('.location');
+    const temperatureEl = weatherDiv?.querySelector('.temperature');
+    const precipitationEl = weatherDiv?.querySelector('.precipitation');
+    const descriptionEl = weatherDiv?.querySelector('.description');
+
+    const setFallbackValues = () => {
+        if (locationEl) locationEl.textContent = "Location Not Found";
+        if (temperatureEl) temperatureEl.textContent = "_";
+        if (precipitationEl) precipitationEl.textContent = "_";
+        if (descriptionEl) descriptionEl.textContent = "Description Not Found";
+    };
+
     socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        const { location, temperature, precipitation, description } = data;
+        try {
+            const data = JSON.parse(event.data);
+            const {
+                location = "",
+                temperature = "",
+                precipitation = "",
+                description = ""
+            } = data;
 
-        const weatherDiv = document.getElementById('weather');
-        if (!weatherDiv) return;
+            if (!location || !temperature || !precipitation || !description) {
+                setFallbackValues();
+                return;
+            }
 
-        weatherDiv.dataset.location = location;
-        weatherDiv.dataset.temperature = temperature;
-        weatherDiv.dataset.precipitation = precipitation;
-        weatherDiv.dataset.description = description;
+            if (weatherDiv) {
+                weatherDiv.dataset.location = location;
+                weatherDiv.dataset.temperature = temperature;
+                weatherDiv.dataset.precipitation = precipitation;
+                weatherDiv.dataset.description = description;
+            }
 
-        const locationEl = weatherDiv.querySelector('.location');
-        const temperatureEl = weatherDiv.querySelector('.temperature');
-        const precipitationEl = weatherDiv.querySelector('.precipitation');
-        const descriptionEl = weatherDiv.querySelector('.description');
-
-        if (locationEl) locationEl.textContent = location;
-        if (temperatureEl) temperatureEl.textContent = `${temperature} °C`;
-        if (precipitationEl) precipitationEl.textContent = `${precipitation} %`;
-        if (descriptionEl) descriptionEl.textContent = description;
+            if (locationEl) locationEl.textContent = location;
+            if (temperatureEl) temperatureEl.textContent = `${temperature} °C`;
+            if (precipitationEl) precipitationEl.textContent = `${precipitation} %`;
+            if (descriptionEl) descriptionEl.textContent = description;
+        } catch (err) {
+            console.error("Invalid data received:", err);
+            setFallbackValues();
+        }
     };
 
     socket.onerror = (error) => {
         console.error("WebSocket error:", error);
+        setFallbackValues();
     };
 
     socket.onclose = () => {
         console.warn("Weather WebSocket closed.");
+        setFallbackValues();
     };
 }
 
