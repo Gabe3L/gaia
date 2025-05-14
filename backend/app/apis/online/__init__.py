@@ -1,4 +1,5 @@
 __all__ = [
+    "fitbit",
     "google_calendar",
     "google_search",
     "location",
