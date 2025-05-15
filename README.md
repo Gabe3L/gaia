@@ -97,7 +97,7 @@ pip install -r requirements.txt
 
 ### Frontend Setup
 
-Install required packages for electron:
+Install electron and all other required packages:
 ```bash
 npm install
 ```
