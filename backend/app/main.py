@@ -21,7 +21,7 @@ logger = setup_logger(file_name)
 
 app = FastAPI()
 
-gaia = Gaia()
+gaia = Gaia() 
 thread_manager = ThreadManager(gaia)
 
 stop_event = Event()
@@ -173,18 +173,12 @@ async def websocket_clock(websocket: WebSocket):
 
     try:
         while True:
-            minute = await date_time.get_minute()
-            hour = await date_time.get_hour()
-            day = await date_time.get_day()
-            month = await date_time.get_month()
-            year = await date_time.get_year()
+            time = await date_time.get_formatted_time()
+            date = await date_time.get_formatted_date()
 
             data = {
-                "minute": minute,
-                "hour": hour,
-                "day": day,
-                "month": month,
-                "year": year
+                "time": time,
+                "date": date
             }
             disconnected = []
             for client in connected_clients:
@@ -201,47 +195,7 @@ async def websocket_clock(websocket: WebSocket):
         connected_clients.remove(websocket)
     except Exception as e:
         logger.error(e)
-        
-@app.websocket("/ws/webcam")
-async def websocket_webcam(websocket: WebSocket):
-    await websocket.accept()
-    connected_clients.append(websocket)
-
-    # try:
-    #     while True:
-    #         artist = await spotify.get_this_artist()
-    #         title = await spotify.get_this_title()
-    #         timestamp = await spotify.get_this_timestamp()
-    #         total_time = await spotify.get_this_total_time()
-    #         album_cover = await spotify.get_this_album_cover()
-    #         next_artist = await spotify.get_next_artist()
-    #         next_title = await spotify.get_next_title()
-
-    #         data = {
-    #             "artist": artist,
-    #             "title": title,
-    #             "timestamp": timestamp,
-    #             "total_time": total_time,
-    #             "album_cover": album_cover,
-    #             "next_artist": next_artist,
-    #             "next_title": next_title
-    #         }
-    #         disconnected = []
-    #         for client in connected_clients:
-    #             try:
-    #                 await client.send_json(data)
-    #             except WebSocketDisconnect:
-    #                 disconnected.append(client)
-    #         for client in disconnected:
-    #             connected_clients.remove(client)
-
-    #         await asyncio.sleep(2)
-    # except WebSocketDisconnect:
-    #     logger.info("Spotify websocket disconnected")
-    #     connected_clients.remove(websocket)
-    # except Exception as e:
-    #     logger.error(e)
-        
+     
 @app.websocket("/ws/system")
 async def websocket_system(websocket: WebSocket):
     await websocket.accept()
@@ -282,8 +236,38 @@ async def websocket_system(websocket: WebSocket):
     # except Exception as e:
     #     logger.error(e)
         
-@app.websocket("/ws/email")
-async def websocket_email(websocket: WebSocket):
+@app.websocket("/ws/gmail")
+async def websocket_gmail(websocket: WebSocket):
+    await websocket.accept()
+    connected_clients.append(websocket)
+
+    try:
+        while True:
+            senders = await gmail.get_senders()
+            headers = await gmail.get_headers()
+
+            data = {
+                "senders": senders,
+                "headers": headers
+            }
+            disconnected = []
+            for client in connected_clients:
+                try:
+                    await client.send_json(data)
+                except WebSocketDisconnect:
+                    disconnected.append(client)
+            for client in disconnected:
+                connected_clients.remove(client)
+
+            await asyncio.sleep(2)
+    except WebSocketDisconnect:
+        logger.info("Gmail websocket disconnected")
+        connected_clients.remove(websocket)
+    except Exception as e:
+        logger.error(e)        
+
+@app.websocket("/ws/webcam")
+async def websocket_webcam(websocket: WebSocket):
     await websocket.accept()
     connected_clients.append(websocket)
 
@@ -321,3 +305,4 @@ async def websocket_email(websocket: WebSocket):
     #     connected_clients.remove(websocket)
     # except Exception as e:
     #     logger.error(e)
+   

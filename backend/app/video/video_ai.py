@@ -122,16 +122,15 @@ class Webcam:
 
                 self.fps_tracker.update()
 
-                if VideoConfig.GUI_ENABLED:
-                    if box is not None:
-                        frame = VideoDisplay.annotate_frame(frame, box, label)
+                if box is not None:
+                    frame = VideoDisplay.annotate_frame(frame, box, label)
 
-                    VideoDisplay.insert_text_onto_frame(
-                        frame, f'FPS: {int(self.fps_tracker.displayed_fps)}', row=1)
-                    VideoDisplay.show_frame("GAIA Test", frame)
+                VideoDisplay.insert_text_onto_frame(
+                    frame, f'FPS: {int(self.fps_tracker.displayed_fps)}', row=1)
+                VideoDisplay.show_frame("GAIA Test", frame)
 
-                    if cv2.waitKey(1) & 0xFF == ord('q'):
-                        break
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
         finally:
             self.camera_thread_running = False
             self.camera_thread.join()
@@ -171,6 +170,8 @@ class Webcam:
                 self.windows.unclick()
                 self.windows.mouse_scroll('down')
                 return
+            
+
 
 ##############################################################################################
 
