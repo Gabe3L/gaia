@@ -1,4 +1,4 @@
-import * as widgets from '/static/js/widgets.js';
+import * as widgets from '../js/widgets.js';
 
 const threadStates = {
     camera: false,
@@ -24,18 +24,11 @@ function toggleThread(name) {
         .then(data => {
             threadStates[name] = !isRunning;
             const action = isRunning ? "Stopped" : "Started";
-            console.info(`${action} ${formatThreadName(name)} thread.`);
+            console.info(`${action} ${name} thread.`);
         })
         .catch(err => {
-            console.error(`Error toggling ${formatThreadName(name)}: ${err.message}`);
+            console.error(`Error toggling ${name}: ${err.message}`);
         });
-}
-
-function formatThreadName(name) {
-    return name
-        .split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
 }
 
 document.addEventListener('DOMContentLoaded', function () {

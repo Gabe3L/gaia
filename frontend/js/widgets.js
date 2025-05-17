@@ -70,10 +70,10 @@ function updateWeatherWidget() {
     const descriptionEl = weatherDiv?.querySelector('.description');
 
     const setFallbackValues = () => {
-        if (locationEl) locationEl.textContent = "Location Not Found";
+        if (locationEl) locationEl.textContent = "No Location";
         if (temperatureEl) temperatureEl.textContent = "_";
         if (precipitationEl) precipitationEl.textContent = "_";
-        if (descriptionEl) descriptionEl.textContent = "Description Not Found";
+        if (descriptionEl) descriptionEl.textContent = "";
     };
 
     socket.onmessage = (event) => {
@@ -132,10 +132,10 @@ function updateSpotifyWidget() {
     const nextTitleEl = spotifyDiv?.querySelector('.next-title');
 
     const setFallbackValues = () => {
-        if (titleEl) titleEl.textContent = "";
+        if (titleEl) titleEl.textContent = "No Playback";
         if (artistEl) artistEl.textContent = "";
-        if (currentTimeEl) currentTimeEl.textContent = "";
-        if (totalTimeEl) totalTimeEl.textContent = "";
+        if (currentTimeEl) currentTimeEl.textContent = "0:00";
+        if (totalTimeEl) totalTimeEl.textContent = "0:00";
         if (albumCoverEl) albumCoverEl.textContent = "";
         if (nextArtistEl) nextArtistEl.textContent = "";
         if (nextTitleEl) nextTitleEl.textContent = "";
@@ -149,12 +149,13 @@ function updateSpotifyWidget() {
                 artist = "",
                 current_time = "",
                 total_time = "",
+                album_name = "",
                 album_cover = "",
                 next_artist = "",
                 next_title = ""
             } = data;
 
-            if (!title || !artist || !current_time || !total_time || !album_cover || !next_artist || !next_title) {
+            if (!title || !artist || !current_time || !total_time || !album_name || !album_cover || !next_artist || !next_title) {
                 setFallbackValues();
                 return;
             }
@@ -176,6 +177,20 @@ function updateSpotifyWidget() {
             if (albumCoverEl) albumCoverEl.textContent = album_cover;
             if (nextArtistEl) nextArtistEl.textContent = next_artist;
             if (nextTitleEl) nextTitleEl.textContent = next_title;
+
+            const fillEl = spotifyDiv?.querySelector('.playback-fill');
+            if (fillEl && current_time && total_time) {
+                const timeToSeconds = (timeStr) => {
+                    const [mins, secs] = timeStr.split(':').map(Number);
+                    return (mins * 60) + secs;
+                };
+
+                const currentSeconds = timeToSeconds(current_time);
+                const totalSeconds = timeToSeconds(total_time);
+
+                const percent = Math.min((currentSeconds / totalSeconds) * 100, 100);
+                fillEl.style.width = `${percent}%`;
+            }
         } catch (err) {
             console.error("Invalid data received:", err);
             setFallbackValues();
@@ -306,10 +321,10 @@ function updateSystemWidget() {
     const diskEl = systemDiv?.querySelector('.disk');
 
     const setFallbackValues = () => {
-        if (cpuEl) cpuEl.textContent = "Location Not Found";
+        if (cpuEl) cpuEl.textContent = "_";
         if (gpuEl) gpuEl.textContent = "_";
         if (ramEl) ramEl.textContent = "_";
-        if (diskEl) diskEl.textContent = "Description Not Found";
+        if (diskEl) diskEl.textContent = "_";
     };
 
     socket.onmessage = (event) => {

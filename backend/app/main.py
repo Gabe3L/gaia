@@ -22,7 +22,7 @@ logger = setup_logger(file_name)
 
 app = FastAPI()
 
-gaia = Gaia() 
+gaia = Gaia()
 thread_manager = ThreadManager(gaia)
 
 stop_event = Event()
@@ -43,6 +43,7 @@ if os.name == 'nt':
 
 #####################################################################
 
+
 @app.get("/")
 def read_root():
     return FileResponse(html_path / "home.html")
@@ -61,6 +62,8 @@ async def stop_named_thread(thread_name: str):
     return {"message": f"Stopped thread: {thread_name}"}
 
 # Widgets
+
+
 @app.websocket("/ws/weather")
 async def websocket_weather(websocket: WebSocket):
     await websocket.accept()
@@ -88,12 +91,13 @@ async def websocket_weather(websocket: WebSocket):
             for client in disconnected:
                 connected_clients.remove(client)
 
-            await asyncio.sleep(300) # 5 Minutes
+            await asyncio.sleep(300)  # 5 Minutes
     except WebSocketDisconnect:
         logger.info("Weather websocket disconnected")
         connected_clients.remove(websocket)
     except Exception as e:
         logger.error(e)
+
 
 @app.websocket("/ws/spotify")
 async def websocket_spotify(websocket: WebSocket):
@@ -106,6 +110,7 @@ async def websocket_spotify(websocket: WebSocket):
             title = await spotify.get_title()
             current_time = await spotify.get_current_time()
             total_time = await spotify.get_total_time()
+            album_name = await spotify.get_album_name()
             album_cover = await spotify.get_album_cover()
             next_artist = await spotify.get_next_artist()
             next_title = await spotify.get_next_title()
@@ -115,6 +120,7 @@ async def websocket_spotify(websocket: WebSocket):
                 "title": title,
                 "current_time": current_time,
                 "total_time": total_time,
+                "album_name": album_name,
                 "album_cover": album_cover,
                 "next_artist": next_artist,
                 "next_title": next_title
@@ -134,7 +140,8 @@ async def websocket_spotify(websocket: WebSocket):
         connected_clients.remove(websocket)
     except Exception as e:
         logger.error(e)
-        
+
+
 @app.websocket("/ws/calendar")
 async def websocket_calendar(websocket: WebSocket):
     await websocket.accept()
@@ -166,7 +173,8 @@ async def websocket_calendar(websocket: WebSocket):
         connected_clients.remove(websocket)
     except Exception as e:
         logger.error(e)
-        
+
+
 @app.websocket("/ws/clock")
 async def websocket_clock(websocket: WebSocket):
     await websocket.accept()
@@ -196,7 +204,8 @@ async def websocket_clock(websocket: WebSocket):
         connected_clients.remove(websocket)
     except Exception as e:
         logger.error(e)
-     
+
+
 @app.websocket("/ws/system")
 async def websocket_system(websocket: WebSocket):
     await websocket.accept()
@@ -230,7 +239,8 @@ async def websocket_system(websocket: WebSocket):
         connected_clients.remove(websocket)
     except Exception as e:
         logger.error(e)
-        
+
+
 @app.websocket("/ws/gmail")
 async def websocket_gmail(websocket: WebSocket):
     await websocket.accept()
@@ -260,6 +270,7 @@ async def websocket_gmail(websocket: WebSocket):
         connected_clients.remove(websocket)
     except Exception as e:
         logger.error(e)
+
 
 @app.websocket("/ws/webcam")
 async def websocket_webcam(websocket: WebSocket):
@@ -301,6 +312,7 @@ async def websocket_webcam(websocket: WebSocket):
     # except Exception as e:
     #     logger.error(e)
 
+
 @app.websocket("/ws/settings/widgets")
 async def websocket_settings_widgets(websocket: WebSocket):
     await websocket.accept()
@@ -310,12 +322,12 @@ async def websocket_settings_widgets(websocket: WebSocket):
         current_data = {}
 
         while True:
-            with open("/static/config/widgets.json", "r") as file:
+            with open("../config/widgets.json", "r") as file:
                 data = json.load(file)
 
             if data != current_data:
                 current_data = data
-                
+
                 disconnected = []
                 for client in connected_clients:
                     try:
