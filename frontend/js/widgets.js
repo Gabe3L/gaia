@@ -69,25 +69,17 @@ function updateWeatherWidget() {
     const precipitationEl = weatherDiv?.querySelector('.precipitation');
     const descriptionEl = weatherDiv?.querySelector('.description');
 
-    const setFallbackValues = () => {
-        if (locationEl) locationEl.textContent = "No Location";
-        if (temperatureEl) temperatureEl.textContent = "_";
-        if (precipitationEl) precipitationEl.textContent = "_";
-        if (descriptionEl) descriptionEl.textContent = "";
-    };
-
     socket.onmessage = (event) => {
         try {
             const data = JSON.parse(event.data);
             const {
-                location = "",
+                location = "No Location",
                 temperature = "",
                 precipitation = "",
                 description = ""
             } = data;
 
             if (!location || !temperature || !precipitation || !description) {
-                setFallbackValues();
                 return;
             }
 
@@ -104,18 +96,15 @@ function updateWeatherWidget() {
             if (descriptionEl) descriptionEl.textContent = description;
         } catch (err) {
             console.error("Invalid data received:", err);
-            setFallbackValues();
         }
     };
 
     socket.onerror = (error) => {
         console.error("WebSocket error:", error);
-        setFallbackValues();
     };
 
     socket.onclose = () => {
         console.warn("Weather WebSocket closed.");
-        setFallbackValues();
     };
 }
 
@@ -127,56 +116,48 @@ function updateSpotifyWidget() {
     const artistEl = spotifyDiv?.querySelector('.artist');
     const currentTimeEl = spotifyDiv?.querySelector('.current-time');
     const totalTimeEl = spotifyDiv?.querySelector('.total-time');
+    const albumNameEl = spotifyDiv?.querySelector('.album-name');
     const albumCoverEl = spotifyDiv?.querySelector('.album-cover');
     const nextArtistEl = spotifyDiv?.querySelector('.next-artist');
     const nextTitleEl = spotifyDiv?.querySelector('.next-title');
-
-    const setFallbackValues = () => {
-        if (titleEl) titleEl.textContent = "No Playback";
-        if (artistEl) artistEl.textContent = "";
-        if (currentTimeEl) currentTimeEl.textContent = "0:00";
-        if (totalTimeEl) totalTimeEl.textContent = "0:00";
-        if (albumCoverEl) albumCoverEl.textContent = "";
-        if (nextArtistEl) nextArtistEl.textContent = "";
-        if (nextTitleEl) nextTitleEl.textContent = "";
-    };
 
     socket.onmessage = (event) => {
         try {
             const data = JSON.parse(event.data);
             const {
-                title = "",
-                artist = "",
-                current_time = "",
-                total_time = "",
-                album_name = "",
-                album_cover = "",
-                next_artist = "",
-                next_title = ""
+                title = "No Playback",
+                current_time = "0:00",
+                total_time = "0:00",
+                next_artist = "No Artist",
+                next_title = "Queue Empty",
+                album_name = "Unknown Album",
+                artist = "Unknown Artist",
+                album_cover = null
             } = data;
 
-            if (!title || !artist || !current_time || !total_time || !album_name || !album_cover || !next_artist || !next_title) {
-                setFallbackValues();
+            if (!title || !current_time || !total_time || !next_artist || !next_title || !artist || !album_name || !album_cover) {
                 return;
             }
 
             if (spotifyDiv) {
                 spotifyDiv.dataset.title = title;
-                spotifyDiv.dataset.artist = artist;
                 spotifyDiv.dataset.current_time = current_time;
                 spotifyDiv.dataset.total_time = total_time;
-                spotifyDiv.dataset.album_cover = album_cover;
                 spotifyDiv.dataset.next_artist = next_artist;
                 spotifyDiv.dataset.next_title = next_title;
+                spotifyDiv.dataset.artist = artist;
+                spotifyDiv.dataset.album_name = album_name;
+                spotifyDiv.dataset.album_cover = album_cover;
             }
 
             if (titleEl) titleEl.textContent = title;
             if (artistEl) artistEl.textContent = artist;
             if (currentTimeEl) currentTimeEl.textContent = current_time;
             if (totalTimeEl) totalTimeEl.textContent = total_time;
-            if (albumCoverEl) albumCoverEl.textContent = album_cover;
             if (nextArtistEl) nextArtistEl.textContent = next_artist;
             if (nextTitleEl) nextTitleEl.textContent = next_title;
+            if (albumNameEl) albumNameEl.textContent = next_artist;
+            if (albumCoverEl) albumCoverEl.src = album_cover;
 
             const fillEl = spotifyDiv?.querySelector('.playback-fill');
             if (fillEl && current_time && total_time) {
@@ -193,18 +174,15 @@ function updateSpotifyWidget() {
             }
         } catch (err) {
             console.error("Invalid data received:", err);
-            setFallbackValues();
         }
     };
 
     socket.onerror = (error) => {
         console.error("Spotify WebSocket error:", error);
-        setFallbackValues();
     };
 
     socket.onclose = () => {
         console.warn("Spotify WebSocket closed.");
-        setFallbackValues();
     };
 }
 
@@ -216,12 +194,6 @@ function updateCalendarWidget() {
     const firstDayEl = calendarDiv?.querySelector('.first-day');
     const eventTitlesEl = calendarDiv?.querySelector('.event-titles');
 
-    const setFallbackValues = () => {
-        if (dateEl) dateEl.textContent = "";
-        if (firstDayEl) firstDayEl.textContent = "";
-        if (eventTitlesEl) eventTitlesEl.textContent = "";
-    };
-
     socket.onmessage = (event) => {
         try {
             const data = JSON.parse(event.data);
@@ -232,7 +204,6 @@ function updateCalendarWidget() {
             } = data;
 
             if (!date || !first_day || !event_titles) {
-                setFallbackValues();
                 return;
             }
 
@@ -247,18 +218,15 @@ function updateCalendarWidget() {
             if (eventTitlesEl) eventTitlesEl.textContent = event_titles;
         } catch (err) {
             console.error("Invalid data received:", err);
-            setFallbackValues();
         }
     };
 
     socket.onerror = (error) => {
         console.error("Calendar WebSocket error:", error);
-        setFallbackValues();
     };
 
     socket.onclose = () => {
         console.warn("Calendar WebSocket closed.");
-        setFallbackValues();
     };
 }
 
@@ -269,21 +237,15 @@ function updateClockWidget() {
     const timeEl = clockDiv?.querySelector('.time');
     const dateEl = clockDiv?.querySelector('.date');
 
-    const setFallbackValues = () => {
-        if (timeEl) timeEl.textContent = "00:00";
-        if (dateEl) dateEl.textContent = "Date Unknown";
-    };
-
     socket.onmessage = (event) => {
         try {
             const data = JSON.parse(event.data);
             const {
-                time = "",
-                date = ""
+                time = "00:00",
+                date = "Date Unknown"
             } = data;
 
             if (!time || !date) {
-                setFallbackValues();
                 return;
             }
 
@@ -296,18 +258,15 @@ function updateClockWidget() {
             if (dateEl) dateEl.textContent = date;
         } catch (err) {
             console.error("Invalid data received:", err);
-            setFallbackValues();
         }
     };
 
     socket.onerror = (error) => {
         console.error("Clock WebSocket error:", error);
-        setFallbackValues();
     };
 
     socket.onclose = () => {
         console.warn("Clock WebSocket closed.");
-        setFallbackValues();
     };
 }
 
@@ -320,13 +279,6 @@ function updateSystemWidget() {
     const ramEl = systemDiv?.querySelector('.ram');
     const diskEl = systemDiv?.querySelector('.disk');
 
-    const setFallbackValues = () => {
-        if (cpuEl) cpuEl.textContent = "_";
-        if (gpuEl) gpuEl.textContent = "_";
-        if (ramEl) ramEl.textContent = "_";
-        if (diskEl) diskEl.textContent = "_";
-    };
-
     socket.onmessage = (event) => {
         try {
             const data = JSON.parse(event.data);
@@ -338,7 +290,6 @@ function updateSystemWidget() {
             } = data;
 
             if (!cpu_usage || !gpu_usage || !ram_usage || !disk_usage) {
-                setFallbackValues();
                 return;
             }
 
@@ -355,18 +306,15 @@ function updateSystemWidget() {
             if (diskEl) diskEl.textContent = disk_usage;
         } catch (err) {
             console.error("Invalid data received:", err);
-            setFallbackValues();
         }
     };
 
     socket.onerror = (error) => {
         console.error("System WebSocket error:", error);
-        setFallbackValues();
     };
 
     socket.onclose = () => {
         console.warn("System WebSocket closed.");
-        setFallbackValues();
     };
 }
 
@@ -378,23 +326,16 @@ function updateGmailWidget() {
     const headersEl = gmailDiv?.querySelector('.headers');
     const profileEl = gmailDiv?.querySelector('.profile');
 
-    const setFallbackValues = () => {
-        if (sendersEl) sendersEl.textContent = "No Unread Emails!";
-        if (headersEl) headersEl.textContent = "Good Job :)";
-        if (profileEl) profileEl.textContent = "";
-    };
-
     socket.onmessage = (event) => {
         try {
             const data = JSON.parse(event.data);
             const {
-                headers = "",
-                senders = "",
+                headers = "No Unread Emails!",
+                senders = "Good Job :)",
                 profile = ""
             } = data;
 
             if (!headers || !senders || !profile) {
-                setFallbackValues();
                 return;
             }
 
@@ -409,18 +350,15 @@ function updateGmailWidget() {
             if (profileEl) profileEl.textContent = profile;
         } catch (err) {
             console.error("Invalid data received:", err);
-            setFallbackValues();
         }
     };
 
     socket.onerror = (error) => {
         console.error("Gmail WebSocket error:", error);
-        setFallbackValues();
     };
 
     socket.onclose = () => {
         console.warn("Gmail WebSocket closed.");
-        setFallbackValues();
     };
 }
 

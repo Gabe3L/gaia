@@ -64,7 +64,7 @@
 }
 
 #spotify {
-    background: conic-gradient(from 45deg, #195800, #00af00);
+    background: linear-gradient(145deg, #24e668, #11642e 50%);
     color: var(--black);
 
     display: grid;
@@ -79,14 +79,23 @@
     position: relative;
     aspect-ratio: 1 / 1;
     width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 10px;
+    white-space: nowrap;
 }
 
 #spotify .box.black {
-    background-color: var(--black);
+    background-color: #00220b;
+    color: white;
 }
 
 #spotify .box.white {
-    background-color: #6ee63e;
+    background-color: #79ff80;
+    color: black;
 }
 
 #spotify .playback-bar {
@@ -109,13 +118,6 @@
     transition: width 0.3s ease;
 }
 
-#spotify .title {
-    font-weight: 700;
-    margin-top: 10px;
-    text-align: center;
-    pointer-events: none;
-}
-
 #spotify .time-container {
     position: absolute;
     bottom: 24px;
@@ -125,12 +127,34 @@
     display: flex;
     justify-content: space-between;
     font-weight: 500;
-    color: var(--black);
-    pointer-events: none;
+}
+
+#spotify .title,
+#spotify .next-artist,
+#spotify .next-title,
+#spotify .artist,
+#spotify .album-name {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
+    font-weight: 700;
+}
+
+#spotify .next-title {
+    font-size: 15px;
+}
+
+#spotify .album-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    background-color: black;
 }
 
 #none {
-    background-color: var(--black);
+    background-color: black;
     outline: dotted 5px;
     position: relative;
 }
