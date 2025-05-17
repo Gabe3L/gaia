@@ -322,7 +322,7 @@ async def websocket_settings_widgets(websocket: WebSocket):
         current_data = {}
 
         while True:
-            with open("../config/widgets.json", "r") as file:
+            with open("/static/config/widgets.json", "r") as file:
                 data = json.load(file)
 
             if data != current_data:

@@ -1,4 +1,4 @@
-import * as widgets from '../js/widgets.js';
+import * as widgets from '/static/js/widgets.js';
 
 const threadStates = {
     camera: false,
