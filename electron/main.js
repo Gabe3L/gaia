@@ -19,7 +19,7 @@ function createWindow() {
     mainWindow.loadURL('http://127.0.0.1:8000');
   });
 
-  // mainWindow.webContents.openDevTools(); // TODO: Remove for prod
+  mainWindow.webContents.openDevTools(); // TODO: Remove for prod
   mainWindow.maximize(true);
 
   Menu.setApplicationMenu(null);

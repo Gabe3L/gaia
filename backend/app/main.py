@@ -1,4 +1,5 @@
 import os
+import json
 import asyncio
 from queue import Queue
 from typing import List
@@ -101,18 +102,18 @@ async def websocket_spotify(websocket: WebSocket):
 
     try:
         while True:
-            artist = await spotify.get_this_artist()
-            title = await spotify.get_this_title()
-            timestamp = await spotify.get_this_timestamp()
-            total_time = await spotify.get_this_total_time()
-            album_cover = await spotify.get_this_album_cover()
+            artist = await spotify.get_artist()
+            title = await spotify.get_title()
+            current_time = await spotify.get_current_time()
+            total_time = await spotify.get_total_time()
+            album_cover = await spotify.get_album_cover()
             next_artist = await spotify.get_next_artist()
             next_title = await spotify.get_next_title()
 
             data = {
                 "artist": artist,
                 "title": title,
-                "timestamp": timestamp,
+                "current_time": current_time,
                 "total_time": total_time,
                 "album_cover": album_cover,
                 "next_artist": next_artist,
@@ -159,7 +160,7 @@ async def websocket_calendar(websocket: WebSocket):
             for client in disconnected:
                 connected_clients.remove(client)
 
-            await asyncio.sleep(2)
+            await asyncio.sleep(30)
     except WebSocketDisconnect:
         logger.info("Spotify websocket disconnected")
         connected_clients.remove(websocket)
@@ -201,40 +202,34 @@ async def websocket_system(websocket: WebSocket):
     await websocket.accept()
     connected_clients.append(websocket)
 
-    # try:
-    #     while True:
-    #         artist = await spotify.get_this_artist()
-    #         title = await spotify.get_this_title()
-    #         timestamp = await spotify.get_this_timestamp()
-    #         total_time = await spotify.get_this_total_time()
-    #         album_cover = await spotify.get_this_album_cover()
-    #         next_artist = await spotify.get_next_artist()
-    #         next_title = await spotify.get_next_title()
+    try:
+        while True:
+            cpu_usage = await system_stats.get_cpu_usage()
+            gpu_usage = await system_stats.get_gpu_usage()
+            ram_usage = await system_stats.get_ram_usage()
+            disk_usage = await system_stats.get_disk_usage()
 
-    #         data = {
-    #             "artist": artist,
-    #             "title": title,
-    #             "timestamp": timestamp,
-    #             "total_time": total_time,
-    #             "album_cover": album_cover,
-    #             "next_artist": next_artist,
-    #             "next_title": next_title
-    #         }
-    #         disconnected = []
-    #         for client in connected_clients:
-    #             try:
-    #                 await client.send_json(data)
-    #             except WebSocketDisconnect:
-    #                 disconnected.append(client)
-    #         for client in disconnected:
-    #             connected_clients.remove(client)
+            data = {
+                "cpu_usage": cpu_usage,
+                "gpu_usage": gpu_usage,
+                "ram_usage": ram_usage,
+                "disk_usage": disk_usage
+            }
+            disconnected = []
+            for client in connected_clients:
+                try:
+                    await client.send_json(data)
+                except WebSocketDisconnect:
+                    disconnected.append(client)
+            for client in disconnected:
+                connected_clients.remove(client)
 
-    #         await asyncio.sleep(2)
-    # except WebSocketDisconnect:
-    #     logger.info("Spotify websocket disconnected")
-    #     connected_clients.remove(websocket)
-    # except Exception as e:
-    #     logger.error(e)
+            await asyncio.sleep(5)
+    except WebSocketDisconnect:
+        logger.info("Spotify websocket disconnected")
+        connected_clients.remove(websocket)
+    except Exception as e:
+        logger.error(e)
         
 @app.websocket("/ws/gmail")
 async def websocket_gmail(websocket: WebSocket):
@@ -259,12 +254,12 @@ async def websocket_gmail(websocket: WebSocket):
             for client in disconnected:
                 connected_clients.remove(client)
 
-            await asyncio.sleep(2)
+            await asyncio.sleep(30)
     except WebSocketDisconnect:
         logger.info("Gmail websocket disconnected")
         connected_clients.remove(websocket)
     except Exception as e:
-        logger.error(e)        
+        logger.error(e)
 
 @app.websocket("/ws/webcam")
 async def websocket_webcam(websocket: WebSocket):
@@ -305,4 +300,34 @@ async def websocket_webcam(websocket: WebSocket):
     #     connected_clients.remove(websocket)
     # except Exception as e:
     #     logger.error(e)
-   
+
+@app.websocket("/ws/settings/widgets")
+async def websocket_settings_widgets(websocket: WebSocket):
+    await websocket.accept()
+    connected_clients.append(websocket)
+
+    try:
+        current_data = {}
+
+        while True:
+            with open("/static/config/widgets.json", "r") as file:
+                data = json.load(file)
+
+            if data != current_data:
+                current_data = data
+                
+                disconnected = []
+                for client in connected_clients:
+                    try:
+                        await client.send_json(data)
+                    except WebSocketDisconnect:
+                        disconnected.append(client)
+                for client in disconnected:
+                    connected_clients.remove(client)
+
+            await asyncio.sleep(30)
+    except WebSocketDisconnect:
+        logger.info("Widgets websocket disconnected")
+        connected_clients.remove(websocket)
+    except Exception as e:
+        logger.error(e)

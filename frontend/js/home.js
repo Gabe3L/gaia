@@ -42,6 +42,4 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM is fully loaded");
 
     widgets.initUpdatingWidgetData();
-
-    setInterval(widgets.applyWidgetConfig);
 }); 
