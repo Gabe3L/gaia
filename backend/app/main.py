@@ -26,7 +26,6 @@ file_name = os.path.splitext(os.path.basename(__file__))[0]
 logger = setup_logger(file_name)
 
 app = FastAPI()
-
 gaia = Gaia()
 thread_manager = ThreadManager(gaia)
 
@@ -84,7 +83,7 @@ async def websocket_weather(websocket: WebSocket):
             temperature = await weather.get_user_temperature()
             description = await weather.get_user_weather_description()
             precipitation = await weather.get_user_precipitation()
-            user_location = location.get_city()
+            user_location = await asyncio.to_thread(location.get_city)
 
             data = {
                 "temperature": temperature,
@@ -106,7 +105,7 @@ async def websocket_weather(websocket: WebSocket):
         logger.info("Weather websocket disconnected")
         weather_clients.remove(websocket)
     except Exception as e:
-        logger.error(e)
+        logger.error(f'Weather websocket error: {e}')
 
 
 @app.websocket("/ws/spotify")
@@ -116,14 +115,14 @@ async def websocket_spotify(websocket: WebSocket):
 
     try:
         while True:
-            artist = await spotify.get_current_artist()
-            title = await spotify.get_current_title()
-            current_time = await spotify.get_current_timestamp()
-            total_time = await spotify.get_current_total_duration()
-            album_name = await spotify.get_current_album_name()
-            album_cover = await spotify.get_current_album_cover()
-            next_artist = await spotify.get_next_artist()
-            next_title = await spotify.get_next_title()
+            artist = await asyncio.to_thread(spotify.get_current_artist)
+            title = await asyncio.to_thread(spotify.get_current_title)
+            current_time = await asyncio.to_thread(spotify.get_current_timestamp)
+            total_time = await asyncio.to_thread(spotify.get_current_total_duration)
+            album_name = await asyncio.to_thread(spotify.get_current_album_name)
+            album_cover = await asyncio.to_thread(spotify.get_current_album_cover)
+            next_artist = await asyncio.to_thread(spotify.get_next_artist)
+            next_title = await asyncio.to_thread(spotify.get_next_title)
 
             data = {
                 "artist": artist,
@@ -149,7 +148,7 @@ async def websocket_spotify(websocket: WebSocket):
         logger.info("Spotify websocket disconnected")
         spotify_clients.remove(websocket)
     except Exception as e:
-        logger.error(e)
+        logger.error(f'Spotify websocket error: {e}')
 
 
 @app.websocket("/ws/calendar")
@@ -159,9 +158,9 @@ async def websocket_calendar(websocket: WebSocket):
 
     try:
         while True:
-            date = await google_calendar.get_date()
-            first_day = await google_calendar.get_first_day()
-            event_titles = await google_calendar.get_event_titles()
+            date = await asyncio.to_thread(google_calendar.get_date)
+            first_day = await asyncio.to_thread(google_calendar.get_first_day_of_current_month)
+            event_titles = await asyncio.to_thread(google_calendar.get_todays_events)
 
             data = {
                 "date": date,
@@ -179,10 +178,10 @@ async def websocket_calendar(websocket: WebSocket):
 
             await asyncio.sleep(30)
     except WebSocketDisconnect:
-        logger.info("Spotify websocket disconnected")
+        logger.info("Calendar websocket disconnected")
         calendar_clients.remove(websocket)
     except Exception as e:
-        logger.error(e)
+        logger.error(f'Calendar websocket error: {e}')
 
 
 @app.websocket("/ws/clock")
@@ -192,12 +191,12 @@ async def websocket_clock(websocket: WebSocket):
 
     try:
         while True:
-            time = await date_time.get_formatted_time()
-            date = await date_time.get_formatted_date()
+            time_str = await asyncio.to_thread(date_time.get_formatted_time)
+            date_str = await asyncio.to_thread(date_time.get_formatted_date)
 
             data = {
-                "time": time,
-                "date": date
+                "time": time_str,
+                "date": date_str
             }
             disconnected = []
             for client in clock_clients:
@@ -210,10 +209,10 @@ async def websocket_clock(websocket: WebSocket):
 
             await asyncio.sleep(2)
     except WebSocketDisconnect:
-        logger.info("Spotify websocket disconnected")
+        logger.info("Clock websocket disconnected")
         clock_clients.remove(websocket)
     except Exception as e:
-        logger.error(e)
+        logger.error(f'Clock websocket error: {e}')
 
 
 @app.websocket("/ws/system")
@@ -223,10 +222,10 @@ async def websocket_system(websocket: WebSocket):
 
     try:
         while True:
-            cpu_usage = await system_stats.get_cpu_usage()
-            gpu_usage = await system_stats.get_gpu_usage()
-            ram_usage = await system_stats.get_ram_usage()
-            disk_usage = await system_stats.get_disk_usage()
+            cpu_usage = await asyncio.to_thread(system_stats.get_cpu_usage)
+            gpu_usage = await asyncio.to_thread(system_stats.get_gpu_usage)
+            ram_usage = await asyncio.to_thread(system_stats.get_ram_usage)
+            disk_usage = await asyncio.to_thread(system_stats.get_disk_usage)
 
             data = {
                 "cpu_usage": cpu_usage,
@@ -245,10 +244,10 @@ async def websocket_system(websocket: WebSocket):
 
             await asyncio.sleep(5)
     except WebSocketDisconnect:
-        logger.info("Spotify websocket disconnected")
+        logger.info("System websocket disconnected")
         system_clients.remove(websocket)
     except Exception as e:
-        logger.error(e)
+        logger.error(f'System websocket error: {e}')
 
 
 @app.websocket("/ws/gmail")
@@ -258,12 +257,12 @@ async def websocket_gmail(websocket: WebSocket):
 
     try:
         while True:
-            senders = await gmail.get_senders()
-            headers = await gmail.get_headers()
+            senders = await asyncio.to_thread(gmail.get_unread_email_senders)
+            subjects = await asyncio.to_thread(gmail.get_unread_email_subjects)
 
             data = {
                 "senders": senders,
-                "headers": headers
+                "subjects": subjects
             }
             disconnected = []
             for client in gmail_clients:
@@ -279,7 +278,7 @@ async def websocket_gmail(websocket: WebSocket):
         logger.info("Gmail websocket disconnected")
         gmail_clients.remove(websocket)
     except Exception as e:
-        logger.error(e)
+        logger.error(f'Gmail websocket error: {e}')
 
 
 @app.websocket("/ws/webcam")
@@ -317,10 +316,10 @@ async def websocket_webcam(websocket: WebSocket):
 
     #         await asyncio.sleep(2)
     # except WebSocketDisconnect:
-    #     logger.info("Spotify websocket disconnected")
+    #     logger.info("Webcam websocket disconnected")
     #     webcam_clients.remove(websocket)
     # except Exception as e:
-    #     logger.error(e)
+    #     logger.error("Webcam websocket error:", e)
 
 
 @app.websocket("/ws/settings/widgets")
@@ -332,7 +331,7 @@ async def websocket_settings_widgets(websocket: WebSocket):
         current_data = {}
 
         while True:
-            with open("/static/config/widgets.json", "r") as file:
+            with open(os.path.join(frontend_path, "config", "widgets.json"), "r") as file:
                 data = json.load(file)
 
             if data != current_data:
@@ -349,7 +348,7 @@ async def websocket_settings_widgets(websocket: WebSocket):
 
             await asyncio.sleep(30)
     except WebSocketDisconnect:
-        logger.info("Widgets websocket disconnected")
+        logger.info("Widget websocket disconnected")
         widget_clients.remove(websocket)
     except Exception as e:
-        logger.error(e)
+        logger.error(f'Widget websocket error: {e}')

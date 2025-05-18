@@ -35,11 +35,11 @@ function startBackend() {
   });
 
   backendProcess.stderr.on('data', (data) => {
-    console.error(`[Backend Error]: ${data}`);
+    console.log(`[Backend]: ${data}`);
   });
 
   backendProcess.on('close', (code) => {
-    console.log(`Backend exited with code ${code}`);
+    console.log(`[Backend] Exited with code ${code}`);
   });
 }
 

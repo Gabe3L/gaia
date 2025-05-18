@@ -4,17 +4,13 @@ from typing import Dict
 from queue import Queue
 
 from backend.logs.logging_setup import setup_logger
-from backend.app.apis.online.spotify import Spotify
 from backend.app.apis.offline.open_app import OpenApp
+from backend.app.apis.online import spotify
 
 class MusicHandler:
     def __init__(self):
         file_name = os.path.splitext(os.path.basename(__file__))[0]
         self.logger = setup_logger(file_name)
-        self.spotify = Spotify()
-        self.apple_music = None
-        self.youtube_music = None
-        self.amazon_music = None
 
     def handle(self, speech_queue: Queue, elements: Dict[str, str]):
         self.logger.info(f'Recieved: {elements}')
@@ -46,8 +42,8 @@ class MusicHandler:
             if not OpenApp.is_app_open(app):
                 OpenApp.open_app(app)
             
-            device_id = self.spotify.get_device_id()
+            device_id = spotify.get_device_id()
             self.logger.info(f'Searching for {elements} on Spotify')
-            track_info = self.spotify.search_spotify(**elements)
-            self.spotify.play_track(track_info["uri"], device_id)
+            track_info = spotify.search_spotify(**elements)
+            spotify.play_track(track_info["uri"], device_id)
             speech_queue.put("Playing music.")

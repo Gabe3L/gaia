@@ -3,13 +3,21 @@ import json
 import pytz
 import datetime
 from queue import Queue
+from typing import List
 
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-############################################################################
+from backend.logs.logging_setup import setup_logger
+
+################################################################
+
+file_name = os.path.splitext(os.path.basename(__file__))[0]
+logger = setup_logger(file_name)
+
+################################################################
 
 MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
 DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
@@ -38,7 +46,9 @@ def authenticate_google():
 
     return build('calendar', 'v3', credentials=creds)
 
-def get_events(day, service, speech_queue: Queue):
+def get_events(day, service) -> List[str]:
+    authenticate_google()
+
     est = pytz.timezone('America/Toronto')
 
     start_of_day = datetime.datetime.combine(day, datetime.time.min).astimezone(est)
@@ -52,18 +62,37 @@ def get_events(day, service, speech_queue: Queue):
         orderBy='startTime'
     ).execute()
 
-    events = events_result.get('items', [])
+    return events_result.get('items', [])
 
-    if not events:
-        speech_queue.put('No upcoming events found.')
-    else:
-        speech_queue.put(f"You have {len(events)} events on this day.")
-        for event in events:
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            start_time = datetime.datetime.fromisoformat(start).strftime("%I:%M %p")
-            speech_queue.put(f"{event['summary']} at {start_time}")
+def get_first_day_of_current_month() -> str:
+    today = datetime.date.today()
+    
+    first_day = today.replace(day=1)
+    
+    return first_day.strftime("%A")
 
-def get_date(text):
+def get_date() -> str:
+    return datetime.date.today().strftime("%m/%d/%Y")
+
+def get_todays_events(day, service):
+    authenticate_google()
+
+    est = pytz.timezone('America/Toronto')
+
+    start_of_day = datetime.datetime.combine(day, datetime.time.min).astimezone(est)
+    end_of_day = datetime.datetime.combine(day, datetime.time.max).astimezone(est)
+    
+    events_result = service.events().list(
+        calendarId='primary',
+        timeMin=start_of_day.isoformat(),
+        timeMax=end_of_day.isoformat(),
+        singleEvents=True,
+        orderBy='startTime'
+    ).execute()
+
+    return events_result.get('items', [])
+
+def get_date_from_text(text):
     today = datetime.date.today()
     month = day = year = -1
     day_of_week = None
@@ -109,7 +138,16 @@ def get_date(text):
 ############################################################################
 
 if __name__ == "__main__":
-    service = authenticate_google()
+    speech_queue = Queue()
     text_input = "next Monday"
-    date = get_date(text_input)
-    get_events(date, service)
+    date = get_date_from_text(text_input)
+    events = get_events(date)
+    
+    if not events:
+        speech_queue.put('No upcoming events found.')
+    else:
+        speech_queue.put(f"You have {len(events)} events on this day.")
+        for event in events:
+            start = event['start'].get('dateTime', event['start'].get('date'))
+            start_time = datetime.datetime.fromisoformat(start).strftime("%I:%M %p")
+            speech_queue.put(f"{event['summary']} at {start_time}")

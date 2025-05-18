@@ -24,6 +24,9 @@ def convert_size(size_bytes: int) -> str:
     s = round(size_bytes / p, 2)
     return f"{s} {size_name[i]}"
 
+def get_cpu_usage() -> str:
+    return f'{psutil.cpu_percent(interval=1)} %'
+
 def get_gpu_usage() -> str:
     gpus = getGPUs()
     if not gpus:
@@ -43,7 +46,7 @@ def get_disk_usage() -> str:
     return f'{used_disk} / {total_disk}'
 
 def system_stats():
-    cpu_usage = psutil.cpu_percent(interval=1)
+    cpu_usage = get_cpu_usage()
     gpu_usage = get_gpu_usage()
     used_ram, total_ram = get_ram_usage()
     used_disk, total_disk = get_disk_usage()
