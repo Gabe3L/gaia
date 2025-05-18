@@ -124,6 +124,7 @@ function updateSpotifyWidget() {
     socket.onmessage = (event) => {
         try {
             const data = JSON.parse(event.data);
+            console.log(data);
             const {
                 title = "No Playback",
                 current_time = "0:00",

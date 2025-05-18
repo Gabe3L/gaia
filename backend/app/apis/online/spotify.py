@@ -30,7 +30,8 @@ class Spotify:
     def load_config(self) -> None:
         base_dir = os.path.dirname(os.path.abspath(__file__))
 
-        creds_path = os.path.join(base_dir, "..", "..", "..", "..", "shared", "admin", "spotify_creds.json")
+        creds_path = os.path.join(
+            base_dir, "..", "..", "..", "..", "shared", "admin", "spotify_creds.json")
 
         try:
             with open(creds_path, "r") as creds:
@@ -70,7 +71,7 @@ class Spotify:
             query_parts.append(f"album:{elements['album']}")
         if "genre" in elements:
             query_parts.append(f"genre:{elements['genre']}")
-        
+
         query = " ".join(query_parts)
         if not query:
             raise Exception("No valid search parameters provided.")
@@ -79,7 +80,7 @@ class Spotify:
         tracks = results.get("tracks", {}).get("items", [])
         if not tracks:
             raise Exception("No tracks found.")
-        
+
         track = tracks[0]
         return {
             'name': track['name'],
@@ -92,11 +93,128 @@ class Spotify:
     def play_track(self, track_uri: str, device_id: str) -> None:
         self.sp.start_playback(device_id=device_id, uris=[track_uri])
 
+    def get_current_artist(self) -> Optional[str]:
+        try:
+            playback = self.sp.current_playback()
+            if playback:
+                artists = playback['item']['artists']
+                if artists:
+                    artist_names = [artist['name'] for artist in artists]
+                    return ", ".join(artist_names)
+            else:
+                logger.info("No track is currently playing.")
+                return None
+        except Exception as e:
+            logger.error(f"Error retrieving current artist: {e}")
+            return None
+
+    def get_current_title(self) -> Optional[str]:
+        try:
+            playback = self.sp.current_playback()
+            if playback:
+                track = playback['item']
+                return track.get('name')
+            else:
+                logger.info("No track is currently playing.")
+                return None
+        except Exception as e:
+            logger.error(f"Error retrieving current track title: {e}")
+            return None
+
+    def get_current_timestamp(self) -> Optional[str]:
+        try:
+            playback = self.sp.current_playback()
+            if playback:
+                progress_ms = playback.get('progress_ms', 0)
+                minutes = progress_ms // 60000
+                seconds = (progress_ms % 60000) // 1000
+                return f"{minutes}:{seconds:02d}"
+            else:
+                logger.info("No track is currently playing.")
+                return None
+        except Exception as e:
+            logger.error(f"Error retrieving current timestamp: {e}")
+            return None
+
+    def get_current_total_duration(self) -> Optional[str]:
+        try:
+            playback = self.sp.current_playback()
+            if playback:
+                duration_ms = playback['item'].get('duration_ms', 0)
+                minutes = duration_ms // 60000
+                seconds = (duration_ms % 60000) // 1000
+                return f"{minutes}:{seconds:02d}"
+            else:
+                logger.info("No track is currently playing.")
+                return None
+        except Exception as e:
+            logger.error(f"Error retrieving track duration: {e}")
+            return None
+
+    def get_current_album_name(self) -> Optional[str]:
+        try:
+            playback = self.sp.current_playback()
+            if playback:
+                album_name = playback['item']['album'].get('name')
+                return album_name
+            else:
+                logger.info("No track is currently playing.")
+                return None
+        except Exception as e:
+            logger.error(f"Error retrieving album name: {e}")
+            return None
+
+    def get_current_album_cover(self) -> Optional[str]:
+        try:
+            import requests
+
+            playback = self.sp.current_playback()
+            if playback:
+                images = playback['item']['album'].get('images', [])
+                if images:
+                    return images[1].get('url')
+                else:
+                    logger.info("No album images found.")
+            else:
+                logger.info("No track is currently playing.")
+        except Exception as e:
+            logger.error(f"Error displaying album cover: {e}")
+
+    def get_next_artist(self) -> Optional[str]:
+        try:
+            queue = self.sp.queue()
+            next_tracks = queue.get("queue", [])
+            if next_tracks:
+                next_track = next_tracks[0]
+                artists = next_track.get('artists', [])
+                if artists:
+                    artist_names = [artist['name'] for artist in artists]
+                    return ", ".join(artist_names)
+            logger.info("Queue is empty or no next track found.")
+            return None
+        except Exception as e:
+            logger.error(f"Error retrieving next artist in queue: {e}")
+            return None
+
+    def get_next_title(self) -> Optional[str]:
+        try:
+            queue = self.sp.queue()
+            next_tracks = queue.get("queue", [])
+            if next_tracks:
+                next_track = next_tracks[0]
+                return next_track.get('name')
+            logger.info("Queue is empty or no next track found.")
+            return None
+        except Exception as e:
+            logger.error(f"Error retrieving next track title: {e}")
+            return None
 
 ##################################################
+
 
 if __name__ == "__main__":
     spotify = Spotify()
     device_id = spotify.get_device_id()
-    track_info = spotify.search_spotify(artist="AC/DC", song="Thunderstruck", genre="Rock")
+    track_info = spotify.search_spotify(
+        artist="AC/DC", song="Thunderstruck", genre="Rock")
     spotify.play_track(track_info['uri'], device_id)
