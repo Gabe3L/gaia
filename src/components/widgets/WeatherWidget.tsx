@@ -2,13 +2,26 @@ import { useState, useEffect } from "react";
 import styles from './WeatherWidget.module.css';
 import baseWidget from './BaseWidget.module.css';
 
-export default function WeatherWidget({ style }) {
-  const [data, setData] = useState({
+type WeatherWidgetProps = {
+  style?: React.CSSProperties;
+};
+
+type WeatherData = {
+  location: string;
+  temperature: string;
+  precipitation: string;
+  description: string;
+};
+
+const DEFAULT_WEATHER_DATA: WeatherData = {
     location: "No Location",
     temperature: "",
     precipitation: "",
     description: "",
-  });
+};
+
+export default function WeatherWidget({ style }: WeatherWidgetProps) {
+  const [data, setData] = useState<WeatherData>(DEFAULT_WEATHER_DATA);
 
   useEffect(() => {
     const socket = new WebSocket(
@@ -18,16 +31,13 @@ export default function WeatherWidget({ style }) {
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        const {
-          location = "No Location",
-          temperature = "",
-          precipitation = "",
-          description = "",
-        } = data;
 
-        if (location && temperature && precipitation && description) {
-          setData({ location, temperature, precipitation, description });
-        }
+        const location = data.location ?? DEFAULT_WEATHER_DATA.location;
+        const temperature = data.temperature ?? DEFAULT_WEATHER_DATA.temperature;
+        const precipitation = data.precipitation ?? DEFAULT_WEATHER_DATA.precipitation;
+        const description = data.description ?? DEFAULT_WEATHER_DATA.description;
+
+        setData({ location, temperature, precipitation, description });
       } catch (err) {
         console.error("Invalid weather data received:", err);
       }

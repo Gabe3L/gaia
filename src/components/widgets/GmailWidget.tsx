@@ -2,9 +2,22 @@ import { useEffect, useState } from "react";
 import styles from "./GmailWidget.module.css";
 import baseWidget from "./BaseWidget.module.css";
 
-export default function GmailWidget({ style }) {
-  const [senders, setSenders] = useState("Good Job :)");
-  const [headers, setHeaders] = useState("No Unread Emails!");
+type GmailWidgetProps = {
+  style?: React.CSSProperties;
+};
+
+type GmailData = {
+  senders: Array<string>;
+  headers: Array<string>;
+}
+
+const DEFAULT_GMAIL_DATA: GmailData = {
+  senders: ["Good Job :)"],
+  headers: ["No Unread Emails!"],
+};
+
+export default function GmailWidget({ style }: GmailWidgetProps) {
+  const [data, setData] = useState<GmailData>(DEFAULT_GMAIL_DATA);
 
   useEffect(() => {
     const socket = new WebSocket(
@@ -14,13 +27,11 @@ export default function GmailWidget({ style }) {
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        const {
-          senders: newSenders = "Good Job :)",
-          headers: newHeaders = "No Unread Emails!",
-        } = data;
+        
+        const senders = data.senders ?? DEFAULT_GMAIL_DATA.senders;
+        const headers = data.headers ?? DEFAULT_GMAIL_DATA.headers;
 
-        setSenders(newSenders);
-        setHeaders(newHeaders);
+        setData({ senders, headers });
       } catch (err) {
         console.error("Invalid JSON data:", err);
       }
@@ -39,8 +50,8 @@ export default function GmailWidget({ style }) {
 
   return (
     <div className={`${styles.gmail} ${baseWidget.widget}`} style={style}>
-      <div className={styles.senders}>{senders}</div>
-      <div className={styles.headers}>{headers}</div>
+      <div className={styles.senders}>{data.senders}</div>
+      <div className={styles.headers}>{data.headers}</div>
     </div>
   );
 }

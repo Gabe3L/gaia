@@ -2,8 +2,12 @@ import { useEffect, useRef } from 'react';
 import styles from "./WebcamWidget.module.css";
 import baseWidget from "./BaseWidget.module.css";
 
-export default function WebcamWidget({ style }) {
-  const videoRef = useRef(null);
+type WebcamWidgetProps = {
+  style?: React.CSSProperties;
+};
+
+export default function WebcamWidget({ style }: WebcamWidgetProps) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     const startWebcam = async () => {
@@ -17,16 +21,18 @@ export default function WebcamWidget({ style }) {
           videoRef.current.srcObject = stream;
         }
       } catch (err) {
-        console.error(`Webcam error: ${err.message}`);
+        console.error(`Webcam error: ${err}`);
       }
     };
 
     startWebcam();
 
     return () => {
-      const stream = videoRef.current?.srcObject;
-      if (stream) {
+      const videoElement = videoRef.current;
+      if (videoElement && videoElement.srcObject) {
+        const stream = videoElement.srcObject as MediaStream;
         stream.getTracks().forEach(track => track.stop());
+        videoElement.srcObject = null;
       }
     };
   }, []);

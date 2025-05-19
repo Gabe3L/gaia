@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import styles from "./Widgets.module.css";
 
 import WeatherWidget from "./widgets/WeatherWidget";
@@ -10,8 +9,29 @@ import SystemWidget from "./widgets/SystemWidget";
 import GmailWidget from "./widgets/GmailWidget";
 import WebcamWidget from "./widgets/WebcamWidget";
 
+type WidgetId =
+  | "weather"
+  | "spotify"
+  | "calendar"
+  | "clock"
+  | "system"
+  | "email"
+  | "webcam";
+
+type WidgetConfigEntry = {
+  visible: boolean;
+  gridWidth: number;
+  gridHeight: number;
+  xLocation: number;
+  yLocation: number;
+};
+
+type WidgetConfig = {
+  [key in WidgetId]: WidgetConfigEntry;
+};
+
 export default function Widgets() {
-  const [widgetConfig, setWidgetConfig] = useState({});
+  const [widgetConfig, setWidgetConfig] = useState<Partial<WidgetConfig>>({});
 
   useEffect(() => {
     fetch("/settings/widgets.json")
@@ -29,7 +49,7 @@ export default function Widgets() {
       });
   }, []);
 
-  const getStyle = (id) => {
+  const getStyle = (id: WidgetId): React.CSSProperties => {
     const config = widgetConfig[id];
     if (
       !config ||

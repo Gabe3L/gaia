@@ -8,10 +8,12 @@ const initialThreadStates = {
   performing_actions: false,
 };
 
-export default function ControlBar() {
-  const [threadStates, setThreadStates] = useState(initialThreadStates);
+type ThreadName = keyof typeof initialThreadStates;
 
-  function toggleThread(name) {
+export default function ControlBar() {
+  const [threadStates, setThreadStates] = useState<typeof initialThreadStates>(initialThreadStates);
+
+  function toggleThread(name: ThreadName) {
     if (!(name in threadStates)) {
       console.error(`Unknown thread: ${name}`);
       return;

@@ -1,18 +1,35 @@
 import { useState, useEffect } from "react";
-import styles from './SpotifyWidget.module.css';
-import baseWidget from './BaseWidget.module.css';
+import styles from "./SpotifyWidget.module.css";
+import baseWidget from "./BaseWidget.module.css";
 
-export default function SpotifyWidget({ style }) {
-  const [data, setData] = useState({
-    title: "No Playback",
-    current_time: "0:00",
-    total_time: "0:00",
-    next_artist: "No Artist",
-    next_title: "Queue Empty",
-    album_name: "Unknown Album",
-    artist: "Unknown Artist",
-    album_cover: null,
-  });
+type SpotifyWidgetProps = {
+  style?: React.CSSProperties;
+};
+
+type SpotifyData = {
+  title: string;
+  current_time: string;
+  total_time: string;
+  next_artist: string;
+  next_title: string;
+  album_name: string;
+  artist: string;
+  album_cover: string | null;
+};
+
+const DEFAULT_SPOTIFY_DATA: SpotifyData = {
+  title: "No Playback",
+  current_time: "0:00",
+  total_time: "0:00",
+  next_artist: "No Artist",
+  next_title: "Queue Empty",
+  album_name: "Unknown Album",
+  artist: "Unknown Artist",
+  album_cover: null,
+};
+
+export default function SpotifyWidget({ style }: SpotifyWidgetProps) {
+  const [data, setData] = useState<SpotifyData>(DEFAULT_SPOTIFY_DATA);
 
   useEffect(() => {
     const socket = new WebSocket(
@@ -22,18 +39,29 @@ export default function SpotifyWidget({ style }) {
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        const mergedData = {
-          title: data.title || "No Playback",
-          current_time: data.current_time || "0:00",
-          total_time: data.total_time || "0:00",
-          next_artist: data.next_artist || "No Artist",
-          next_title: data.next_title || "Queue Empty",
-          album_name: data.album_name || "Unknown Album",
-          artist: data.artist || "Unknown Artist",
-          album_cover: data.album_cover || null,
-        };
 
-        setData(mergedData);
+        const title = data.title ?? DEFAULT_SPOTIFY_DATA.title;
+        const current_time =
+          data.current_time ?? DEFAULT_SPOTIFY_DATA.current_time;
+        const total_time = data.total_time ?? DEFAULT_SPOTIFY_DATA.total_time;
+        const next_artist =
+          data.next_artist ?? DEFAULT_SPOTIFY_DATA.next_artist;
+        const next_title = data.next_title ?? DEFAULT_SPOTIFY_DATA.next_title;
+        const album_name = data.album_name ?? DEFAULT_SPOTIFY_DATA.album_name;
+        const artist = data.artist ?? DEFAULT_SPOTIFY_DATA.artist;
+        const album_cover =
+          data.album_cover ?? DEFAULT_SPOTIFY_DATA.album_cover;
+
+        setData({
+          title,
+          current_time,
+          total_time,
+          next_artist,
+          next_title,
+          album_name,
+          artist,
+          album_cover,
+        });
       } catch (err) {
         console.error("Invalid JSON data:", err);
       }
@@ -51,7 +79,7 @@ export default function SpotifyWidget({ style }) {
   }, []);
 
   const getProgressPercent = () => {
-    const timeToSeconds = (str) => {
+    const timeToSeconds = (str: string) => {
       const [min, sec] = str.split(":").map(Number);
       return min * 60 + sec || 0;
     };
@@ -77,7 +105,15 @@ export default function SpotifyWidget({ style }) {
       </div>
 
       <div className={`${styles.box} ${styles.black}`}>
-        <img className={styles.albumCover} src={data.album_cover} alt="Album Cover" />
+        {data.album_cover ? (
+          <img
+            className={styles.albumCover}
+            src={data.album_cover}
+            alt="Album Cover"
+          />
+        ) : (
+          <div className={styles.noAlbumCover}>No Album Cover</div>
+        )}
       </div>
 
       <div className={`${styles.box} ${styles.black}`}>
