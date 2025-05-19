@@ -20,7 +20,7 @@ function createWindow() {
   });
 
   mainWindow.webContents.session.clearCache().then(() => { // TODO: Remove for prod
-    mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
+    mainWindow.loadURL("http://127.0.0.1:8000");
   });
 
   mainWindow.webContents.openDevTools(); // TODO: Remove for prod
@@ -51,7 +51,7 @@ function waitForBackendReady() {
   let dotCount = 1;
 
   const tryConnect = () => {
-    http.get('http://127.0.0.1:8000/ready', () => {
+    http.get('http://127.0.0.1:8000/', () => {
       console.log('[Backend] INFO:     Backend is ready');
       createWindow();
     }).on('error', () => {

@@ -5,7 +5,9 @@ from queue import Queue
 from typing import List
 from threading import Event
 
+from starlette.responses import FileResponse
 from fastapi import FastAPI, BackgroundTasks, WebSocket, WebSocketDisconnect
+from fastapi.staticfiles import StaticFiles
 
 from backend.logs.logging_setup import setup_logger
 from backend.app.processor import Gaia, ThreadManager
@@ -44,9 +46,13 @@ if os.name == 'nt':
 
 #####################################################################
 
-@app.get("/ready")
-def ready():
-    return {"status": "ok"}
+app.mount("/assets", StaticFiles(directory=os.path.join("build", "assets")), name="assets")
+
+#####################################################################
+
+@app.get("/")
+def serve_index():
+    return FileResponse(os.path.join("build", "index.html"))
 
 @app.post("/start-thread/{thread_name}")
 async def start_named_thread(thread_name: str, background_tasks: BackgroundTasks):
