@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import styles from "./CalendarWidget.module.css";
+import baseWidget from "./BaseWidget.module.css";
 
-export default function CalendarWidget() {
+export default function CalendarWidget({ style }) {
   const [calendarData, setCalendarData] = useState({
     date: "",
     first_day: "",
@@ -21,7 +23,7 @@ export default function CalendarWidget() {
           setCalendarData({ date, first_day, event_titles });
         }
       } catch (err) {
-        console.error("Invalid calendar data received:", err);
+        console.error("Invalid cal endar data received:", err);
       }
     };
 
@@ -37,10 +39,10 @@ export default function CalendarWidget() {
   }, []);
 
   return (
-    <div className="widget" id="calendar">
-      <div className="date">{calendarData.date}</div>
-      <div className="first-day">{calendarData.first_day}</div>
-      <div className="event-titles">{calendarData.event_titles}</div>
+    <div className={`${styles.calendar} ${baseWidget.widget}`} style={style}>
+      <div className={styles.date}>{calendarData.date}</div>
+      <div className={styles.firstDay}>{calendarData.first_day}</div>
+      <div className={styles.eventTitles}>{calendarData.event_titles}</div>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import styles from "./GmailWidget.module.css";
+import baseWidget from "./BaseWidget.module.css";
 
-export default function GmailWidget() {
+export default function GmailWidget({ style }) {
   const [senders, setSenders] = useState("Good Job :)");
   const [headers, setHeaders] = useState("No Unread Emails!");
 
@@ -20,7 +22,7 @@ export default function GmailWidget() {
         setSenders(newSenders);
         setHeaders(newHeaders);
       } catch (err) {
-        console.error("Invalid Gmail data:", err);
+        console.error("Invalid JSON data:", err);
       }
     };
 
@@ -36,9 +38,9 @@ export default function GmailWidget() {
   }, []);
 
   return (
-    <div className="widget" id="gmail">
-      <div className="senders">{senders}</div>
-      <div className="headers">{headers}</div>
+    <div className={`${styles.gmail} ${baseWidget.widget}`} style={style}>
+      <div className={styles.senders}>{senders}</div>
+      <div className={styles.headers}>{headers}</div>
     </div>
   );
 }

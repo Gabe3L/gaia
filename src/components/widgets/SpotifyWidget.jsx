@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import styles from './SpotifyWidget.module.css';
+import baseWidget from './BaseWidget.module.css';
 
-export default function SpotifyWidget() {
+export default function SpotifyWidget({ style }) {
   const [data, setData] = useState({
     title: "No Playback",
     current_time: "0:00",
@@ -9,7 +11,7 @@ export default function SpotifyWidget() {
     next_title: "Queue Empty",
     album_name: "Unknown Album",
     artist: "Unknown Artist",
-    album_cover: "",
+    album_cover: null,
   });
 
   useEffect(() => {
@@ -20,8 +22,6 @@ export default function SpotifyWidget() {
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log("Received:", data);
-
         const mergedData = {
           title: data.title || "No Playback",
           current_time: data.current_time || "0:00",
@@ -30,7 +30,7 @@ export default function SpotifyWidget() {
           next_title: data.next_title || "Queue Empty",
           album_name: data.album_name || "Unknown Album",
           artist: data.artist || "Unknown Artist",
-          album_cover: data.album_cover || "",
+          album_cover: data.album_cover || null,
         };
 
         setData(mergedData);
@@ -40,11 +40,11 @@ export default function SpotifyWidget() {
     };
 
     socket.onerror = (err) => {
-      console.error("WebSocket Error:", err);
+      console.error("Spotify WebSocket Error:", err);
     };
 
     socket.onclose = () => {
-      console.warn("WebSocket closed.");
+      console.warn("Spotify WebSocket closed.");
     };
 
     return () => socket.close();
@@ -61,30 +61,33 @@ export default function SpotifyWidget() {
   };
 
   return (
-    <div className="widget" id="spotify">
-      <div className="box white">
-        <div className="title">{data.title}</div>
-        <div className="time-container">
-          <span className="current-time">{data.current_time}</span>
-          <span className="total-time">{data.total_time}</span>
+    <div className={`${styles.spotify} ${baseWidget.widget}`} style={style}>
+      <div className={`${styles.box} ${styles.white}`}>
+        <div className={styles.title}>{data.title}</div>
+        <div className={styles.timeContainer}>
+          <span className={styles.currentTime}>{data.current_time}</span>
+          <span className={styles.totalTime}>{data.total_time}</span>
         </div>
-        <div className="playback-bar">
+        <div className={styles.playbackBar}>
           <div
-            className="playback-fill"
+            className={styles.playbackFill}
             style={{ width: `${getProgressPercent()}%` }}
           ></div>
         </div>
       </div>
-      <div className="box black">
-        <img className="album-cover" src={data.album_cover} alt="Album Cover" />
+
+      <div className={`${styles.box} ${styles.black}`}>
+        <img className={styles.albumCover} src={data.album_cover} alt="Album Cover" />
       </div>
-      <div className="box black">
-        <div className="next-title">{data.next_title}</div>
-        <div className="next-artist">{data.next_artist}</div>
+
+      <div className={`${styles.box} ${styles.black}`}>
+        <div className={styles.nextTitle}>{data.next_title}</div>
+        <div className={styles.nextArtist}>{data.next_artist}</div>
       </div>
-      <div className="box white">
-        <div className="album-name">{data.album_name}</div>
-        <div className="artist">{data.artist}</div>
+
+      <div className={`${styles.box} ${styles.white}`}>
+        <div className={styles.albumName}>{data.album_name}</div>
+        <div className={styles.artist}>{data.artist}</div>
       </div>
     </div>
   );

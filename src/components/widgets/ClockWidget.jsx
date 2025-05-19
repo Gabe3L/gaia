@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import styles from "./ClockWidget.module.css";
+import baseWidget from "./BaseWidget.module.css";
 
-export default function ClockWidget() {
-  const [clockData, setClockData] = useState({
+export default function ClockWidget({ style }) {
+  const [data, setData] = useState({
     time: "00:00",
     date: "Date Unknown",
   });
@@ -17,7 +19,7 @@ export default function ClockWidget() {
         const { time = "00:00", date = "Date Unknown" } = data;
 
         if (time && date) {
-          setClockData({ time, date });
+          setData({ time, date });
         }
       } catch (err) {
         console.error("Invalid clock data received:", err);
@@ -36,9 +38,9 @@ export default function ClockWidget() {
   }, []);
 
   return (
-    <div className="widget" id="clock">
-      <div className="time">{clockData.time}</div>
-      <div className="date">{clockData.date}</div>
+    <div className={`${styles.clock} ${baseWidget.widget}`} style={style}>
+      <div className={styles.time}>{data.time}</div>
+      <div className={styles.date}>{data.date}</div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import styles from './ControlBar.module.css'
 
 const initialThreadStates = {
   camera: false,
@@ -39,9 +40,9 @@ export default function ControlBar() {
   }
 
   return (
-    <div className="control-bar">
+    <div className={styles.controlBar}>
       <button id="menu-button">🪟</button>
-      <div className="control-buttons">
+      <div className={styles.controlButtons}>
         <button
           onClick={() => toggleThread("camera")}
           style={{ backgroundColor: threadStates.camera ? "green" : "red" }}

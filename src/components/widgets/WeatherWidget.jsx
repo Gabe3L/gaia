@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import styles from './WeatherWidget.module.css';
+import baseWidget from './BaseWidget.module.css';
 
-export default function WeatherWidget() {
-  const [weather, setWeather] = useState({
+export default function WeatherWidget({ style }) {
+  const [data, setData] = useState({
     location: "No Location",
     temperature: "",
     precipitation: "",
@@ -24,7 +26,7 @@ export default function WeatherWidget() {
         } = data;
 
         if (location && temperature && precipitation && description) {
-          setWeather({ location, temperature, precipitation, description });
+          setData({ location, temperature, precipitation, description });
         }
       } catch (err) {
         console.error("Invalid weather data received:", err);
@@ -43,15 +45,15 @@ export default function WeatherWidget() {
   }, []);
 
   return (
-    <div className="widget" id="weather">
-      <div className="location">{weather.location}</div>
-      <div className="temperature">
-        {weather.temperature ? `${weather.temperature} °C` : ""}
+    <div className={`${styles.weather} ${baseWidget.widget}`} style={style}>
+      <div className={styles.location}>{data.location}</div>
+      <div className={styles.temperature}>
+        {data.temperature ? `${data.temperature} °C` : ""}
       </div>
-      <div className="precipitation">
-        {weather.precipitation ? `${weather.precipitation} %` : ""}
+      <div className={styles.precipitation}>
+        {data.precipitation ? `${data.precipitation} %` : ""}
       </div>
-      <div className="description">{weather.description}</div>
+      <div className={styles.description}>{data.description}</div>
     </div>
   );
 }

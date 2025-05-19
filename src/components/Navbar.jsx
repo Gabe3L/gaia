@@ -1,14 +1,16 @@
+import styles from './Navbar.module.css';
+
 export default function Navbar() {
   return (
     <nav>
-      <div className="nav-left">
+      <div className={styles.navLeft}>
         <button>⚙️</button>
       </div>
-      <div className="nav-center">
+      <div className={styles.navCenter}>
         <button>🔍</button>
         <p>Type to GAIA</p>
       </div>
-      <div className="nav-right">
+      <div className={styles.navRight}>
         <button>👤</button>
       </div>
     </nav>

@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
+import styles from "./WebcamWidget.module.css";
+import baseWidget from "./BaseWidget.module.css";
 
-export default function WebcamWidget() {
+export default function WebcamWidget({ style }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -29,5 +31,5 @@ export default function WebcamWidget() {
     };
   }, []);
 
-  return <video className="widget" id="webcam" ref={videoRef} autoPlay muted />;
+  return <video className={`${styles.webcam} ${baseWidget.widget}`} style={style} ref={videoRef} autoPlay muted />;
 }
