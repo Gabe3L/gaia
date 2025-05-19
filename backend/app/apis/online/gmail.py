@@ -1,13 +1,8 @@
 import os
-import json
 import smtplib
 from typing import List
 
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-
+from backend.app.apis.online.google_authentication import authenticate_gmail
 from backend.logs.logging_setup import setup_logger
 
 ################################################################
@@ -17,32 +12,8 @@ logger = setup_logger(file_name)
 
 ################################################################
 
-SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
-
-def authenticate_google():
-    creds = None
-    token_path = 'shared/admin/token.json'
-    credentials_path = 'shared/admin/oauth_credentials.json'
-
-    if os.path.exists(token_path):
-        with open(token_path, 'r') as token_file:
-            creds_data = json.load(token_file)
-            creds = Credentials.from_authorized_user_info(info=creds_data, scopes=SCOPES)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
-            creds = flow.run_local_server(port=0)
-        
-        with open(token_path, 'w') as token_file:
-            token_file.write(creds.to_json())
-
-    return build('gmail', 'v1', credentials=creds)
-
 def get_unread_email_subjects() -> List[str]:
-    service = authenticate_google()
+    service = authenticate_gmail()
 
     results = service.users().messages().list(userId='me', q='is:unread').execute()
     messages = results.get('messages', [])
@@ -58,7 +29,7 @@ def get_unread_email_subjects() -> List[str]:
     return subjects
 
 def get_unread_email_senders() -> List[str]:
-    service = authenticate_google()
+    service = authenticate_gmail()
     
     results = service.users().messages().list(userId='me', q='is:unread').execute()
     messages = results.get('messages', [])

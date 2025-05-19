@@ -1,15 +1,10 @@
 import os
-import json
 import pytz
 import datetime
 from queue import Queue
-from typing import List
+from typing import List, Any
 
-from google.oauth2.credentials import Credentials
-from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-
+from backend.app.apis.online.google_authentication import authenticate_calendar
 from backend.logs.logging_setup import setup_logger
 
 ################################################################
@@ -22,32 +17,9 @@ logger = setup_logger(file_name)
 MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
 DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 DAY_EXTENSIONS = ["rd", "th", "st", "nd"]
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-def authenticate_google():
-    creds = None
-    token_path = 'token.json'
-    credentials_path = 'credentials.json'
-
-    if os.path.exists(token_path):
-        with open(token_path, 'r') as token_file:
-            creds_data = json.load(token_file)
-            creds = Credentials.from_authorized_user_info(info=creds_data, scopes=SCOPES)
-    
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
-            creds = flow.run_local_server(port=0)
-        
-        with open(token_path, 'w') as token_file:
-            token_file.write(creds.to_json())
-
-    return build('calendar', 'v3', credentials=creds)
-
-def get_events(day, service) -> List[str]:
-    authenticate_google()
+def get_events(day: datetime.date) -> List[str]:
+    service = authenticate_calendar()
 
     est = pytz.timezone('America/Toronto')
 
@@ -74,13 +46,13 @@ def get_first_day_of_current_month() -> str:
 def get_date() -> str:
     return datetime.date.today().strftime("%m/%d/%Y")
 
-def get_todays_events(day, service):
-    authenticate_google()
+def get_todays_events() -> Any:
+    service = authenticate_calendar()
 
     est = pytz.timezone('America/Toronto')
 
-    start_of_day = datetime.datetime.combine(day, datetime.time.min).astimezone(est)
-    end_of_day = datetime.datetime.combine(day, datetime.time.max).astimezone(est)
+    start_of_day = datetime.datetime.combine(datetime.date.today(), datetime.time.min).astimezone(est)
+    end_of_day = datetime.datetime.combine(datetime.date.today(), datetime.time.max).astimezone(est)
     
     events_result = service.events().list(
         calendarId='primary',
@@ -92,7 +64,7 @@ def get_todays_events(day, service):
 
     return events_result.get('items', [])
 
-def get_date_from_text(text):
+def get_date_from_text(text: str) -> datetime.date:
     today = datetime.date.today()
     month = day = year = -1
     day_of_week = None

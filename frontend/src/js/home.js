@@ -1,4 +1,4 @@
-import * as widgets from '/static/js/widgets.js';
+import * as widgets from './widgets'
 
 const threadStates = {
     camera: false,
@@ -7,7 +7,7 @@ const threadStates = {
     performing_actions: false,
 };
 
-function toggleThread(name) {
+export function toggleThread(name) {
     if (!(name in threadStates)) {
         console.error(`Unknown thread: ${name}`);
         return;
@@ -25,6 +25,7 @@ function toggleThread(name) {
             threadStates[name] = !isRunning;
             const action = isRunning ? "Stopped" : "Started";
             console.info(`${action} ${name} thread.`);
+            console.info(data);
         })
         .catch(err => {
             console.error(`Error toggling ${name}: ${err.message}`);

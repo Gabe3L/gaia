@@ -1,7 +1,11 @@
-const { app, BrowserWindow, Menu } = require('electron');
-const { spawn } = require('child_process');
-const path = require('path');
-const http = require('http');
+import { app, BrowserWindow, Menu } from 'electron';
+import { spawn } from 'child_process';
+import path from 'path';
+import http from 'http';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let mainWindow;
 let backendProcess;
@@ -16,7 +20,7 @@ function createWindow() {
   });
 
   mainWindow.webContents.session.clearCache().then(() => { // TODO: Remove for prod
-    mainWindow.loadURL('http://127.0.0.1:8000');
+    mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
   });
 
   mainWindow.webContents.openDevTools(); // TODO: Remove for prod
@@ -26,7 +30,7 @@ function createWindow() {
 }
 
 function startBackend() {
-  const scriptPath = path.resolve(__dirname, '..', 'backend', 'start.py');
+  const scriptPath = path.resolve(__dirname, 'backend', 'start.py');
 
   backendProcess = spawn('python', [scriptPath]);
 
@@ -47,8 +51,8 @@ function waitForBackendReady() {
   let dotCount = 1;
 
   const tryConnect = () => {
-    http.get('http://127.0.0.1:8000', () => {
-      console.log('Backend is ready');
+    http.get('http://127.0.0.1:8000/ready', () => {
+      console.log('[Backend] INFO:     Backend is ready');
       createWindow();
     }).on('error', () => {
       process.stdout.write('Waiting for backend' + '.'.repeat(dotCount) + '   ');

@@ -1,10 +1,10 @@
 __pycache__/
 *.py[cod]
 
-shared/admin/*
-!shared/admin/.gitkeep
-shared/settings/*
-!shared/settings/.gitkeep
+config/admin/*
+!config/admin/.gitkeep
+config/settings/*
+!config/settings/.gitkeep
 
 node_modules/
 dist/
