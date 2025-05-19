@@ -19,33 +19,24 @@ class Windows:
     MOUSEEVENTF_LEFTUP = 0x0004
     MOUSEEVENTF_WHEEL = 0x0800
 
-    def __init__(self, cap: cv2.VideoCapture) -> None:
+    def __init__(self) -> None:
         self.clicking = False
         self.mci = ctypes.WinDLL('winmm')
-        self.cap = cap
+        self.user32 = ctypes.windll.user32
 
-    def get_camera_res(self) -> Tuple[int, int]:
-        return (int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
-                int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-
-    @staticmethod
-    def get_cursor_pos() -> Tuple[int, int]:
+    def get_cursor_pos(self) -> Tuple[int, int]:
         point = POINT()
-        ctypes.windll.user32.GetCursorPos(ctypes.byref(point))
+        self.user32.GetCursorPos(ctypes.byref(point))
         return point.x, point.y
 
-    @staticmethod
-    def get_screen_res() -> Tuple[int, int]:
-        user32 = ctypes.windll.user32
-        return (user32.GetSystemMetrics(0), user32.GetSystemMetrics(1))
+    def get_screen_res(self) -> Tuple[int, int]:
+        return (self.user32.GetSystemMetrics(0), self.user32.GetSystemMetrics(1))
 
-    @staticmethod
-    def get_webcam_to_screen_ratio(screen_res: int, camera_res: int) -> Tuple[float, float]:
+    def get_webcam_to_screen_ratio(self, screen_res: int, camera_res: int) -> Tuple[float, float]:
         return (screen_res[0] / screen_res[1], camera_res[0] / camera_res[1])
 
-    @staticmethod
-    def mouse_event(dwFlags: int, dx: int = 0, dy: int = 0, dwData: int = 0, dwExtraInfo: int = 0) -> None:
-        ctypes.windll.user32.mouse_event(dwFlags, dx, dy, dwData, dwExtraInfo)
+    def mouse_event(self, dwFlags: int, dx: int = 0, dy: int = 0, dwData: int = 0, dwExtraInfo: int = 0) -> None:
+        self.user32.mouse_event(dwFlags, dx, dy, dwData, dwExtraInfo)
 
     def left_mouse_down(self) -> None:
         self.mouse_event(self.MOUSEEVENTF_LEFTDOWN)
@@ -63,8 +54,8 @@ class Windows:
         for i in range(steps):
             x = int(start_x + step_x * i)
             y = int(start_y + step_y * i)
-            ctypes.windll.user32.SetCursorPos(int(x), int(y))
-        ctypes.windll.user32.SetCursorPos(int(end_x), int(end_y))
+            self.user32.SetCursorPos(int(x), int(y))
+        self.user32.SetCursorPos(int(end_x), int(end_y))
 
     def mouse_scroll(self, direction: str) -> None:
         directions = {'up': 100, 'down': -100}
