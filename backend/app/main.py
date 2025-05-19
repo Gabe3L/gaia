@@ -3,12 +3,11 @@ import json
 import asyncio
 from queue import Queue
 from typing import List
-from pathlib import Path
 from threading import Event
 
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
+from starlette.responses import FileResponse
 from fastapi import FastAPI, BackgroundTasks, WebSocket, WebSocketDisconnect
+from fastapi.staticfiles import StaticFiles
 
 from backend.logs.logging_setup import setup_logger
 from backend.app.processor import Gaia, ThreadManager
@@ -33,13 +32,6 @@ stop_event = Event()
 speech_queue = Queue()
 command_queue = Queue()
 
-frontend_path = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '..', '..', 'frontend'))
-
-app.mount("/static", StaticFiles(directory=frontend_path), name="static")
-html_path = Path(os.path.dirname(os.path.abspath(__file__)),
-                 '..', '..', 'frontend', 'html')
-
 weather_clients: List[WebSocket] = []
 spotify_clients: List[WebSocket] = []
 gmail_clients: List[WebSocket] = []
@@ -54,11 +46,13 @@ if os.name == 'nt':
 
 #####################################################################
 
+app.mount("/assets", StaticFiles(directory=os.path.join("build", "assets")), name="assets")
+
+#####################################################################
 
 @app.get("/")
-def read_root():
-    return FileResponse(html_path / "home.html")
-
+def serve_index():
+    return FileResponse(os.path.join("build", "index.html"))
 
 @app.post("/start-thread/{thread_name}")
 async def start_named_thread(thread_name: str, background_tasks: BackgroundTasks):
@@ -331,7 +325,7 @@ async def websocket_settings_widgets(websocket: WebSocket):
         current_data = {}
 
         while True:
-            with open(os.path.join(frontend_path, "config", "widgets.json"), "r") as file:
+            with open(os.path.join('..', '..', "config", "settings", "widgets.json"), "r") as file:
                 data = json.load(file)
 
             if data != current_data:

@@ -24,20 +24,23 @@ class Webcam:
         file_name = os.path.splitext(os.path.basename(__file__))[0]
         self.logger = setup_logger(file_name)
 
-        self.cap: cv2.VideoCapture = self.load_webcam()
-        self.windows: Windows = Windows(self.cap)
-        self.device: torch.device = torch.device(
+        self.cap = self.load_webcam()
+        self.windows = Windows()
+        self.device = torch.device(
             'cuda' if torch.cuda.is_available() else 'cpu')
         self.model: YOLODetector = YOLODetector()
         self.fps_tracker = FPSTracker()
 
         self.screen_res = self.windows.get_screen_res()
+        self.camera_res = (int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                           int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         self.webcam_to_screen_ratio = self.windows.get_webcam_to_screen_ratio(
-            self.screen_res, self.windows.get_camera_res())
+            self.screen_res, self.camera_res)
+        
         self.last_click_time: float = 0.0
         self.frame: Optional[np.ndarray] = None
-
         self.frame_lock = Lock()
+
         self.camera_thread_running = True
         self.camera_thread = Thread(target=self.update_frame, daemon=True)
         self.camera_thread.start()
@@ -45,16 +48,16 @@ class Webcam:
         self.tts: Queue = tts
         self.tts.put("Camera is initialized!")
 
-    @staticmethod
-    def load_webcam() -> cv2.VideoCapture:
-        for i in range(0, 5):
+    def load_webcam(self) -> cv2.VideoCapture:
+        for _ in range(5):
             cap = cv2.VideoCapture(0)
             if cap.isOpened():
                 break
             else:
                 time.sleep(0.001)
         if not cap.isOpened():
-            raise RuntimeError("Webcam not found.")
+            self.logger.warning("Webcam not found.")
+            raise RuntimeError("Webcam initialization failed.")
         return cap
 
     def update_frame(self):
@@ -170,11 +173,9 @@ class Webcam:
                 self.windows.unclick()
                 self.windows.mouse_scroll('down')
                 return
-            
 
 
 ##############################################################################################
-
 
 if __name__ == '__main__':
     cam = Webcam()

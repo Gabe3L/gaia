@@ -1,0 +1,8 @@
+.clock {
+    background: gold;
+}
+
+.time,
+.date {
+    color: black
+}
