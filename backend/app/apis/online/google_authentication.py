@@ -20,8 +20,8 @@ SCOPES = ['https://www.googleapis.com/auth/calendar.readonly', 'https://www.goog
 
 def _authenticate_google() -> Any:
     creds = None
-    token_path = 'shared/admin/token.json'
-    credentials_path = 'shared/admin/oauth_credentials.json'
+    token_path = 'backend/app/admin/token.json'
+    credentials_path = 'backend/app/admin/oauth_credentials.json'
 
     if os.path.exists(token_path):
         with open(token_path, 'r') as token_file:

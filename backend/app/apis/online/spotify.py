@@ -3,7 +3,8 @@ import time
 import json
 from typing import Optional, Dict, Any
 
-import spotipy
+from spotipy import Spotify
+from spotipy.oauth2 import SpotifyOAuth
 
 from backend.logs.logging_setup import setup_logger
 
@@ -20,9 +21,7 @@ _sp_client = None
 def load_config() -> Dict[str, Any]:
     global _credentials
     if _credentials is None:
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        creds_path = os.path.join(
-            base_dir, "..", "..", "..", "..", "shared", "admin", "spotify_creds.json")
+        creds_path = os.path.join("backend", "app", "admin", "spotify_creds.json")
         try:
             with open(creds_path, "r") as creds:
                 _credentials = json.load(creds)
@@ -31,12 +30,12 @@ def load_config() -> Dict[str, Any]:
             raise FileNotFoundError(f"Expected credentials at: {creds_path}")
     return _credentials
 
-def get_spotify_client() -> spotipy.Spotify:
+def get_spotify_client() -> Spotify:
     global _sp_client
     if _sp_client is None:
         creds = load_config()
-        _sp_client = spotipy.Spotify(
-            auth_manager=spotipy.oauth2.SpotifyOAuth(
+        _sp_client = Spotify(
+            auth_manager=SpotifyOAuth(
                 client_id=creds["client_id"],
                 client_secret=creds["client_secret"],
                 redirect_uri=creds["redirect_uri"],

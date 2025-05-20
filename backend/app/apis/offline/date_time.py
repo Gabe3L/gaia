@@ -83,7 +83,7 @@ def get_formatted_time() -> Optional[str]:
         hour = now.hour
         minute = now.minute
 
-        with open("shared/settings/preferences.json", "r") as file:
+        with open("public/settings/preferences.json", "r") as file:
             settings = json.load(file)
 
         if settings.get("use_24_hour_time"):

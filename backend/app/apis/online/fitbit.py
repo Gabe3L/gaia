@@ -106,7 +106,7 @@ def build_headers_and_endpoints(access_token: str) -> Tuple[Dict[str, str], Dict
 
 
 def main():
-    creds_path = "shared/admin/fitbit_creds.json"
+    creds_path = "backend/app/admin/fitbit_creds.json"
 
     try:
         creds = load_credentials(creds_path)
