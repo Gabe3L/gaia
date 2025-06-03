@@ -1,14 +1,14 @@
 import { app, BrowserWindow, Menu } from 'electron';
-import { spawn } from 'child_process';
-import path from 'path';
-import http from 'http';
+import { spawn, ChildProcess } from 'child_process';
+import * as path from 'path';
+import * as http from 'http';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-let mainWindow;
-let backendProcess;
+let mainWindow: BrowserWindow | null = null;
+let backendProcess: ChildProcess | null = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -20,11 +20,11 @@ function createWindow() {
   });
 
   mainWindow.webContents.session.clearCache().then(() => { // TODO: Remove for prod
-    mainWindow.loadURL("http://127.0.0.1:8000");
+    if (mainWindow) mainWindow.loadURL("http://127.0.0.1:8000");
   });
 
   mainWindow.webContents.openDevTools(); // TODO: Remove for prod
-  mainWindow.maximize(true);
+  mainWindow.maximize();
 
   Menu.setApplicationMenu(null);
 }
@@ -34,13 +34,17 @@ function startBackend() {
 
   backendProcess = spawn('python', [scriptPath]);
 
-  backendProcess.stdout.on('data', (data) => {
-    console.log(`[Backend]: ${data}`);
-  });
+  if (backendProcess.stdout) {
+    backendProcess.stdout.on('data', (data) => {
+      console.log(`[Backend]: ${data}`);
+    });
+  }
 
-  backendProcess.stderr.on('data', (data) => {
-    console.log(`[Backend]: ${data}`);
-  });
+  if (backendProcess.stderr) {
+    backendProcess.stderr.on('data', (data) => {
+      console.log(`[Backend]: ${data}`);
+    });
+  }
 
   backendProcess.on('close', (code) => {
     console.log(`[Backend] Exited with code ${code}`);
