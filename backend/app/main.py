@@ -35,7 +35,6 @@ command_queue = Queue()
 weather_clients: List[WebSocket] = []
 spotify_clients: List[WebSocket] = []
 gmail_clients: List[WebSocket] = []
-webcam_clients: List[WebSocket] = []
 system_clients: List[WebSocket] = []
 widget_clients: List[WebSocket] = []
 calendar_clients: List[WebSocket] = []
@@ -273,47 +272,6 @@ async def websocket_gmail(websocket: WebSocket):
         gmail_clients.remove(websocket)
     except Exception as e:
         logger.error(f'Gmail websocket error: {e}')
-
-
-@app.websocket("/ws/webcam")
-async def websocket_webcam(websocket: WebSocket):
-    await websocket.accept()
-    webcam_clients.append(websocket)
-
-    # try:
-    #     while True:
-    #         artist = await spotify.get_this_artist()
-    #         title = await spotify.get_this_title()
-    #         timestamp = await spotify.get_this_timestamp()
-    #         total_time = await spotify.get_this_total_time()
-    #         album_cover = await spotify.get_this_album_cover()
-    #         next_artist = await spotify.get_next_artist()
-    #         next_title = await spotify.get_next_title()
-
-    #         data = {
-    #             "artist": artist,
-    #             "title": title,
-    #             "timestamp": timestamp,
-    #             "total_time": total_time,
-    #             "album_cover": album_cover,
-    #             "next_artist": next_artist,
-    #             "next_title": next_title
-    #         }
-    #         disconnected = []
-    #         for client in webcam_clients:
-    #             try:
-    #                 await client.send_json(data)
-    #             except WebSocketDisconnect:
-    #                 disconnected.append(client)
-    #         for client in disconnected:
-    #             webcam_clients.remove(client)
-
-    #         await asyncio.sleep(2)
-    # except WebSocketDisconnect:
-    #     logger.info("Webcam websocket disconnected")
-    #     webcam_clients.remove(websocket)
-    # except Exception as e:
-    #     logger.error("Webcam websocket error:", e)
 
 
 @app.websocket("/ws/settings/widgets")

@@ -1,6 +1,6 @@
 # Project GAIA
 
-GAIA (Gabe's AI Assistant) is an AI-powered desktop assistant that enables intuitive hands-free human-computer interaction. It uses voice recognition to interpret spoken requests, tracks hand gestures to control the cursor, and speaks responses aloud using a text-to-speech engine.
+GAIA (Gabe's AI Assistant) is an intelligent, voice-activated desktop assistant that enables intuitive hands-free human-computer interaction. It uses voice recognition to interpret spoken requests and delivers clear, natural responses aloud using a text-to-speech engine.
 
 GAIA aims to be a fully hands-free assistant useful for accessibility, productivity, and interactive environments, including robotics and human-machine collaboration.
 
@@ -8,9 +8,6 @@ GAIA aims to be a fully hands-free assistant useful for accessibility, productiv
 
 - **Voice Command Recognition**  
   Natural Language Processing (NLP) powered by speech recognition allows users to control the assistant through voice commands.
-
-- **Cursor Control via Hand Gestures**  
-  Leverages computer vision and hand tracking to manipulate the mouse pointer using hand motions captured by a webcam.
 
 - **Text-to-Speech Feedback**  
   GAIA responds verbally to user requests using a realistic voice engine, completing the interaction loop.
@@ -40,10 +37,6 @@ GAIA aims to be a fully hands-free assistant useful for accessibility, productiv
   - [Download Node.js](https://nodejs.org/en/download)
 
 ### Peripherals
-
-- **Webcam**:  
-  - **Minimum**: 640p (SD) webcam  
-  - **Optional**: Disable "Hand Tracking" in settings
   
 - **Microphone**:
   - **Recommended**: Clear microphone for high accuracy
@@ -126,8 +119,6 @@ On Windows, grant access by visiting:
 | **Issue**                        | **Solution**                                                                     |
 |----------------------------------|----------------------------------------------------------------------------------|
 | Microphone not detected          | Ensure it is the default input device and that the volume is appropriate         |
-| Webcam not opening               | Check if it's being used by another app or blocked in Camera Settings            |
-| Hand tracking is slow or laggy   | Improve lighting and ensure CUDA is installed                                    |
 | Text-to-speech is silent         | Ensure your speaker is set as the default audio output                           |
 | Running scripts is disabled      | Run ```Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process``` in terminal |
 | Recieved an error message        | Check the log files located in backend/logs/files and contact Gabe Lynch         |

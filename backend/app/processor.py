@@ -5,7 +5,6 @@ from typing import Optional, Dict
 from threading import Thread, Event
 
 from backend.logs.logging_setup import setup_logger
-from backend.app.video.video_ai import Webcam
 from backend.app.audio.speech_to_text import SpeechToText
 from backend.app.audio.text_to_speech import TextToSpeech
 from backend.app.language.text_to_action import TextToAction
@@ -43,16 +42,6 @@ class Gaia():
             except Exception as e:
                 self.logger.error(
                     f'An Error Occurred with Audio Processing: {str(e)}')
-
-    def handle_camera(self, stop_event, speech_queue: Queue) -> None:
-        camera = Webcam(speech_queue)
-
-        while not stop_event.is_set():
-            try:
-                camera.process_video()
-            except Exception as e:
-                self.logger.error(
-                    f'An Error Occurred with Video Processing: {str(e)}')
 
     def handle_text_to_speech(self, stop_event, speech_queue: Queue) -> None:
         tts = TextToSpeech()
@@ -108,9 +97,6 @@ class ThreadManager():
                                 args=(self.stop_event, speech_queue, command_queue))
             case "text_to_speech":
                 thread = Thread(target=self.gaia.handle_text_to_speech,
-                                args=(self.stop_event, speech_queue))
-            case "camera":
-                thread = Thread(target=self.gaia.handle_camera,
                                 args=(self.stop_event, speech_queue))
             case _:
                 self.logger.error(f"No such thread: {name}")

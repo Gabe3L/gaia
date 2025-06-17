@@ -13,7 +13,6 @@ build/
 
 backend/app/admin/*
 !backend/app/admin/.gitkeep
-backend/app/video/scripts/
 backend/app/language/classifier/results/
 backend/app/language/classifier/weights/
 backend/app/language/classifier/cache/
