@@ -3,7 +3,7 @@ import json
 import requests
 import webbrowser
 from datetime import datetime
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Any
 from requests.auth import HTTPBasicAuth
 from urllib.parse import urlparse, parse_qs, quote
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -65,7 +65,7 @@ def get_authorization_code(auth_url: str, port: int = 8080) -> str:
     return OAuthCallbackHandler.code
 
 
-def exchange_code_for_tokens(creds: Dict[str, str], code: str) -> Dict:
+def exchange_code_for_tokens(creds: Dict[str, str], code: str) -> Dict[str, Any]:
     response = requests.post(
         "https://api.fitbit.com/oauth2/token",
         data={
@@ -83,6 +83,7 @@ def exchange_code_for_tokens(creds: Dict[str, str], code: str) -> Dict:
     else:
         logger.error(f"Token exchange failed: {response.status_code} - {response.text}")
         response.raise_for_status()
+        return {}
 
 
 def build_headers_and_endpoints(access_token: str) -> Tuple[Dict[str, str], Dict[str, str]]:
@@ -110,7 +111,7 @@ def main():
 
     try:
         creds = load_credentials(creds_path)
-        port = urlparse(creds["redirect_uri"]).port
+        port = urlparse(creds["redirect_uri"]).port or 8000
         code = get_authorization_code(build_authorization_url(creds), port)
         token = exchange_code_for_tokens(creds, code).get("access_token")
 

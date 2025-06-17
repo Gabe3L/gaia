@@ -1,10 +1,7 @@
 import os
+import math
 import requests
-import geocoder
-import webbrowser
-
-from geopy.geocoders import Nominatim
-from geopy.distance import great_circle
+from typing import Optional, Tuple
 
 from backend.logs.logging_setup import setup_logger
 
@@ -16,39 +13,63 @@ logger = setup_logger(file_name)
 ################################################################
 
 
-def distance_to_place(place) -> tuple[str, dict, float]:
-    webbrowser.open("http://www.google.com/maps/place/" + place + "")
-    geolocator = Nominatim(user_agent="myGeocoder")
-    location = geolocator.geocode(place, addressdetails=True)
-    target_latlng = location.latitude, location.longitude
-    location = location.raw['address']
-    target_loc = {'city': location.get('city', ''),
-                  'country': location.get('country', '')}
+def get_coordinates(city_name):
+    url = "https://nominatim.openstreetmap.org/search"
+    params = {
+        "q": city_name,
+        "format": "json",
+        "limit": 1
+    }
+    headers = {
+        "User-Agent": "GAIA/1.0"
+    }
+    response = requests.get(url, params=params, headers=headers, timeout=5)
+    response.raise_for_status()
+    data = response.json()
+    
+    if data:
+        lat = float(data[0]['lat'])
+        lon = float(data[0]['lon'])
+        return lat, lon
+    else:
+        return None, None
 
-    current_loc = geocoder.ip('me')
-    current_latlng = current_loc.latlng
+def haversine_distance(lat1, lon1, lat2, lon2):
+    R = 6371.0  # Earth radius in kilometers
 
-    distance = str(great_circle(current_latlng, target_latlng))
-    distance = str(distance.split(' ', 1)[0])
-    distance = round(float(distance), 2)
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
 
-    return current_loc, target_loc, distance
+    a = math.sin(delta_phi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    distance_km = R * c
+
+    return distance_km
 
 
-def get_city() -> str:
-    ip_add = requests.get('https://api.ipify.org').text
-    url = 'https://get.geojs.io/v1/ip/geo/' + ip_add + '.json'
-    geo_requests = requests.get(url)
-    geo_data = geo_requests.json()
-    city = geo_data['city']
+def distance_to_place(city1, city2) -> Optional[float]:
+    lat1, lon1 = get_coordinates(city1)
+    lat2, lon2 = get_coordinates(city2)
+    
+    if None in (lat1, lon1, lat2, lon2):
+        return None
+    
+    return haversine_distance(lat1, lon1, lat2, lon2)
 
-    return city
+def get_user_location() -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    try:
+        response = requests.get("https://ipinfo.io/json", timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        return data.get("city"), data.get("region"), data.get("country")
+    except requests.RequestException as e:
+        logger.error(f"Failed to get user location from IP: {e}")
+        return None, None, None
 
-def get_country() -> str:
-    ip_add = requests.get('https://api.ipify.org').text
-    url = 'https://get.geojs.io/v1/ip/geo/' + ip_add + '.json'
-    geo_requests = requests.get(url)
-    geo_data = geo_requests.json()
-    country = geo_data['country']
-
-    return country
+if __name__ == "__main__":
+    city, region, country = get_user_location()
+    user_location = f'{city}, {region}, {country}'
+    print(distance_to_place(user_location, "Toronto Ontario Canada"))
