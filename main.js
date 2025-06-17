@@ -1,5 +1,5 @@
 import { app, BrowserWindow, Menu } from 'electron';
-import { spawn, ChildProcess } from 'child_process';
+import { spawn } from 'child_process';
 import * as path from 'path';
 import * as http from 'http';
 import { fileURLToPath } from 'url';
@@ -7,8 +7,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-let mainWindow: BrowserWindow | null = null;
-let backendProcess: ChildProcess | null = null;
+let mainWindow = null;
+let backendProcess = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({

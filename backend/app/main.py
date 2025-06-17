@@ -77,7 +77,7 @@ async def websocket_weather(websocket: WebSocket):
             temperature = await weather.get_user_temperature()
             description = await weather.get_user_weather_description()
             precipitation = await weather.get_user_precipitation()
-            user_location = await asyncio.to_thread(location.get_city)
+            user_location = await asyncio.to_thread(location.get_user_location)
 
             data = {
                 "temperature": temperature,
