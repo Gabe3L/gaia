@@ -30,9 +30,7 @@ function createWindow() {
 }
 
 function startBackend() {
-  const scriptPath = path.resolve(__dirname, 'backend', 'start.py');
-
-  backendProcess = spawn('python', [scriptPath]);
+  backendProcess = spawn('uvicorn', ['backend.app.main:app', '--host', '127.0.0.1', '--port', '8000']);
 
   if (backendProcess.stdout) {
     backendProcess.stdout.on('data', (data) => {
